@@ -43,7 +43,7 @@ export const QuadTree = () => {
             gap={8}
         >
             <MasterColumn>
-                <ColumnEntry title="Introduction">
+                <ColumnEntry title="Quad tree" previousLocation="/">
                     <Text opacity={0.6} fontWeight={"light"}>
                         Each particle collides with walls and with other
                         particles. Upon collision both particles flash white for

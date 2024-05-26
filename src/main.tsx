@@ -1,18 +1,19 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import { App } from "./App";
+import { Menu } from "./menu/Menu";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QuadTree } from "./quad-tree/QuadTree";
 
 const router = createBrowserRouter(
     [
         {
             path: "/",
-            element: <App />,
+            element: <Menu />,
         },
         {
             path: "/quad-tree",
-            element: <App />,
+            element: <QuadTree />,
         },
     ],
     { basename: "/coding-adventures" }

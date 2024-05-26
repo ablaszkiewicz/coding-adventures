@@ -1,4 +1,4 @@
-import { Props } from "../App";
+import { Props } from "../QuadTree";
 import { RectangularBoundary } from "./boundaries/RectangularBoundary";
 import { Drawable } from "./Drawable";
 import { Point } from "./Point";

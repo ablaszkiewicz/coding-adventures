@@ -4,7 +4,7 @@ import { GRAY, WHITE, random } from "./utils";
 import { RectangularBoundary } from "./boundaries/RectangularBoundary";
 import p5 from "p5";
 import { BaseSearchEngine } from "./search-engine/BaseSearchEngine";
-import { Props } from "../App";
+import { Props } from "../QuadTree";
 
 const PARTICLE_RANDOM_FACTOR = 1;
 
