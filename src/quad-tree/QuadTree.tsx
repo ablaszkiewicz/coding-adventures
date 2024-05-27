@@ -51,7 +51,7 @@ export const QuadTree = () => {
                         which detects particles inside and marks them green.
                         <br />
                         <br />
-                        Below you can choose which algorithm is used to check
+                        On the right you can choose which algorithm is used to check
                         for collisions and intersections:
                         <br />- <b>classic search</b> - each particle checks
                         every other particle for collisions,
@@ -71,7 +71,7 @@ export const QuadTree = () => {
                         <br />
                         If you don't want to play with these sliders and just
                         want to see something cool, there is a presets section
-                        on the right which will tune the sliders for you.
+                        below which will tune the sliders for you.
                     </Text>
                 </ColumnEntry>
                 <ColumnEntry title="Interesting presets">
