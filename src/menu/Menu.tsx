@@ -16,7 +16,7 @@ export const Menu = () => {
             <MenuItem
                 title="Quad tree"
                 url="quad-tree"
-                description="A simulation showing difference between classic vs quad tree approach when searching ranges on a 2D plane"
+                description="A simulation which shows the difference between classic and quad tree approaches when searching things on a 2D plane"
             />
         </Flex>
     );
