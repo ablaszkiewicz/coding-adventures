@@ -47,7 +47,7 @@ export class Vector3 {
         return this.scalarMultiply(1 / this.length());
     }
 
-    public randomInUnitSphere(): Vector3 {
+    public static randomInUnitSphere(): Vector3 {
         while (true) {
             const p = Vector3.randomBetween(-1, 1);
             if (p.lengthSquared() >= 1) continue;
@@ -55,12 +55,12 @@ export class Vector3 {
         }
     }
 
-    public randomUnitVector(): Vector3 {
-        return this.randomInUnitSphere().unit();
+    public static randomUnitVector(): Vector3 {
+        return Vector3.randomInUnitSphere().unit();
     }
 
     public randomOnHemisphere(): Vector3 {
-        const onUnitSphere = this.randomInUnitSphere();
+        const onUnitSphere = Vector3.randomInUnitSphere();
         if (onUnitSphere.dot(this) > 0.0) {
             return onUnitSphere;
         } else {

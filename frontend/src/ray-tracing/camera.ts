@@ -7,7 +7,8 @@ import { Vector3 } from "./vector3";
 
 const IMAGE_WIDTH = 800;
 const ASPECT_RATIO = 16.0 / 9.0;
-const SAMPLES_PER_PIXEL = 20;
+const SAMPLES_PER_PIXEL = 100;
+const MAX_BOUNCES = 5;
 
 export class Camera {
     private imageHeight!: number;
@@ -28,7 +29,7 @@ export class Camera {
 
                 for (let sample = 0; sample < SAMPLES_PER_PIXEL; sample++) {
                     const ray = this.getRay(i, j);
-                    color = color.add(this.rayColor(ray, world));
+                    color = color.add(this.rayColor(ray, world, MAX_BOUNCES));
                 }
 
                 setPixel(
@@ -66,15 +67,20 @@ export class Camera {
             .subtract(viewportV.scalarMultiply(0.5));
     }
 
-    public rayColor(ray: Ray, world: Hittable): Vector3 {
+    public rayColor(ray: Ray, world: Hittable, depth: number): Vector3 {
+        if (depth <= 0) {
+            return new Vector3(0, 0, 0);
+        }
+
         const hitRecord = new HitRecord();
 
-        if (world.hit(ray, 0, infinity, hitRecord)) {
-            const direction = hitRecord.normal.randomOnHemisphere();
+        if (world.hit(ray, 0.001, infinity, hitRecord)) {
+            const direction = hitRecord.normal.add(Vector3.randomUnitVector());
 
             return this.rayColor(
                 new Ray(hitRecord.position, direction),
-                world
+                world,
+                depth - 1
             ).scalarMultiply(0.5);
             // return hitRecord.normal
             //     .add(new Vector3(1, 1, 1))
