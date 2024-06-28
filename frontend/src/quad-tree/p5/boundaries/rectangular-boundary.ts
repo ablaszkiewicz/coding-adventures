@@ -1,7 +1,7 @@
 import p5 from "p5";
-import { Drawable } from "../Drawable";
-import { Point } from "../Point";
-import { Boundary } from "./Boundary";
+import { Drawable } from "../my-drawable";
+import { Point } from "../my-point";
+import { Boundary } from "./my-boundary";
 
 export class RectangularBoundary implements Boundary, Drawable {
     public center: Point;

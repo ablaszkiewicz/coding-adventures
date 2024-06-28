@@ -1,11 +1,11 @@
 import p5 from "p5";
-import { Particle } from "./Particle";
-import { QuadTree } from "./QuadTree";
-import { RectangularBoundary } from "./boundaries/RectangularBoundary";
-import { ClassicSearchEngine } from "./search-engine/ClassicSearchEngine";
-import { Point } from "./Point";
-import { QuadTreeSearchEngine } from "./search-engine/QuadTreeSearchEngine";
-import { BaseSearchEngine } from "./search-engine/BaseSearchEngine";
+import { Particle } from "./darticle";
+import { QuadTree } from "./quad-tree";
+import { RectangularBoundary } from "./boundaries/rectangular-boundary";
+import { ClassicSearchEngine } from "./search-engine/classic-search-engine";
+import { Point } from "./my-point";
+import { QuadTreeSearchEngine } from "./search-engine/quad-tree-search-engine";
+import { BaseSearchEngine } from "./search-engine/base-search-engine";
 import { Engine, Props } from "../QuadTree";
 
 export function sketch(p5: p5) {

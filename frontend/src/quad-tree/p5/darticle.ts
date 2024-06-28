@@ -1,9 +1,9 @@
-import { Drawable } from "./Drawable";
-import { Point } from "./Point";
+import { Drawable } from "./my-drawable";
+import { Point } from "./my-point";
 import { GRAY, WHITE, random } from "./utils";
-import { RectangularBoundary } from "./boundaries/RectangularBoundary";
+import { RectangularBoundary } from "./boundaries/rectangular-boundary";
 import p5 from "p5";
-import { BaseSearchEngine } from "./search-engine/BaseSearchEngine";
+import { BaseSearchEngine } from "./search-engine/base-search-engine";
 import { Props } from "../QuadTree";
 
 const PARTICLE_RANDOM_FACTOR = 1;

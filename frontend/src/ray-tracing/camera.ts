@@ -7,24 +7,28 @@ import { Vector3 } from "./vector3";
 
 const IMAGE_WIDTH = 800;
 const ASPECT_RATIO = 16.0 / 9.0;
-const SAMPLES_PER_PIXEL = 100;
+const SAMPLES_PER_PIXEL = 20;
 const MAX_BOUNCES = 5;
+const IMAGE_HEIGHT = IMAGE_WIDTH / ASPECT_RATIO;
 
 export class Camera {
-    private imageHeight!: number;
     private center!: Vector3;
     private pixel00Position!: Vector3;
     private pixelDeltaU!: Vector3;
     private pixelDeltaV!: Vector3;
     private pixelSamplesScale!: number;
 
-    public render(context: CanvasRenderingContext2D, world: Hittable) {
+    public render(
+        world: Hittable,
+        progressCallback?: (progress: number) => void
+    ): ImageData {
         this.initialize();
 
-        const imageData = new ImageData(IMAGE_WIDTH, this.imageHeight);
+        const imageData = new ImageData(IMAGE_WIDTH, IMAGE_HEIGHT);
+        let lastReportedPercentage = 0;
 
         for (let i = 0; i < IMAGE_WIDTH; i++) {
-            for (let j = 0; j < this.imageHeight; j++) {
+            for (let j = 0; j < IMAGE_HEIGHT; j++) {
                 let color = new Vector3(0, 0, 0);
 
                 for (let sample = 0; sample < SAMPLES_PER_PIXEL; sample++) {
@@ -37,21 +41,32 @@ export class Camera {
                     { x: i, y: j },
                     color.scalarMultiply(this.pixelSamplesScale)
                 );
+
+                const percentageDone =
+                    ((i * IMAGE_HEIGHT + j) / (IMAGE_WIDTH * IMAGE_HEIGHT)) *
+                    100;
+
+                if (
+                    progressCallback &&
+                    percentageDone - lastReportedPercentage > 1
+                ) {
+                    progressCallback(percentageDone);
+                    lastReportedPercentage = percentageDone;
+                }
             }
         }
 
-        context.putImageData(imageData, 0, 0);
+        return imageData;
     }
 
     public initialize() {
-        this.imageHeight = IMAGE_WIDTH / ASPECT_RATIO;
         this.center = new Vector3(0, 0, 0);
         this.pixelSamplesScale = 1 / SAMPLES_PER_PIXEL;
 
         // viewport
         const focalLength = 1.0;
         const viewportHeight = 2.0;
-        const viewportWidth = (viewportHeight * IMAGE_WIDTH) / this.imageHeight;
+        const viewportWidth = (viewportHeight * IMAGE_WIDTH) / IMAGE_HEIGHT;
 
         // viewport vectors
         const viewportU = new Vector3(viewportWidth, 0, 0);
@@ -59,7 +74,7 @@ export class Camera {
 
         // pixel vectors
         this.pixelDeltaU = viewportU.scalarMultiply(1 / IMAGE_WIDTH);
-        this.pixelDeltaV = viewportV.scalarMultiply(1 / this.imageHeight);
+        this.pixelDeltaV = viewportV.scalarMultiply(1 / IMAGE_HEIGHT);
 
         this.pixel00Position = this.center
             .subtract(new Vector3(0, 0, focalLength))
@@ -82,9 +97,6 @@ export class Camera {
                 world,
                 depth - 1
             ).scalarMultiply(0.5);
-            // return hitRecord.normal
-            //     .add(new Vector3(1, 1, 1))
-            //     .scalarMultiply(0.5);
         }
 
         const unitDirection = ray.direction.unit();

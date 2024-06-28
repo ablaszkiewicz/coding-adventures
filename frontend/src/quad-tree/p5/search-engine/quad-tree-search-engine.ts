@@ -1,8 +1,8 @@
 import { Point } from "framer-motion";
-import { RectangularBoundary } from "../boundaries/RectangularBoundary";
-import { Particle } from "../Particle";
-import { QuadTree } from "../QuadTree";
-import { BaseSearchEngine } from "./BaseSearchEngine";
+import { RectangularBoundary } from "../boundaries/rectangular-boundary";
+import { Particle } from "../darticle";
+import { QuadTree } from "../quad-tree";
+import { BaseSearchEngine } from "./base-search-engine";
 import p5 from "p5";
 
 export class QuadTreeSearchEngine extends BaseSearchEngine {

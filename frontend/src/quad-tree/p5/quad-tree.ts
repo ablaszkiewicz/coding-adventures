@@ -1,7 +1,7 @@
 import { Props } from "../QuadTree";
-import { RectangularBoundary } from "./boundaries/RectangularBoundary";
-import { Drawable } from "./Drawable";
-import { Point } from "./Point";
+import { RectangularBoundary } from "./boundaries/rectangular-boundary";
+import { Drawable } from "./my-drawable";
+import { Point } from "./my-point";
 import { WHITE } from "./utils";
 import p5 from "p5";
 

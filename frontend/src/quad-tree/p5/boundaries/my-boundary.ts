@@ -1,4 +1,4 @@
-import { Point } from "../Point";
+import { Point } from "../my-point";
 
 export interface Boundary {
     center: Point;

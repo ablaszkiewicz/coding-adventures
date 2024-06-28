@@ -1,38 +1,53 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Progress, Text } from "@chakra-ui/react";
 import { ColumnEntry } from "../shared/ColumnEntry";
 import { MasterColumn } from "../shared/MasterColumn";
 import { useEffect, useRef, useState } from "react";
-import { RayTracer } from "./ray-tracer";
 
-export interface Props {
-    engine: Engine;
-    numberOfParticles: number;
-    sizeOfParticles: number;
-    visualizeBoundaries: boolean;
-    maxParticlesPerCell: number;
-    visualizeParticleBoundaries: boolean;
-}
-
-export enum Engine {
-    Classic = "Classic",
-    Quad = "Quad",
-}
+const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+    type: "module",
+});
 
 export const RayTracing = () => {
-    const [rayTracer, setRayTracer] = useState<RayTracer | null>(null);
+    const [progress, setProgress] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [initialized, setInitialized] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-
-        if (!canvas) {
+        if (initialized) {
             return;
         }
+        const canvas = canvasRef.current!;
 
-        const rayTracer = new RayTracer(canvas.getContext("2d")!);
-        rayTracer.render();
-        setRayTracer(rayTracer);
+        worker.onmessage = (e) => {
+            if (e.data.status === "progress") {
+                setProgress(e.data.data);
+                return;
+            }
+
+            if (e.data.status === "done") {
+                canvas.getContext("2d")!.putImageData(e.data.data, 0, 0);
+                setLoading(false);
+            }
+        };
+
+        render();
+        setInitialized(true);
+        clear();
     }, [canvasRef.current]);
+
+    const clear = () => {
+        const canvas = canvasRef.current!;
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        setProgress(0);
+    };
+
+    const render = () => {
+        setLoading(true);
+        worker.postMessage(null);
+    };
 
     return (
         <Flex
@@ -51,22 +66,34 @@ export const RayTracing = () => {
                     </Text>
                 </ColumnEntry>
             </MasterColumn>
-            <Flex
-                flexDir={"column"}
-                justifyContent={"center"}
-                alignItems={"center"}
-            >
+            <Flex flexDir={"column"} alignItems={"center"}>
                 <canvas
                     ref={canvasRef}
                     id="canvas"
                     width="800"
-                    height="800"
+                    height="450"
                 ></canvas>
             </Flex>
             <MasterColumn>
-                <ColumnEntry title="Options">
-                    <Button onClick={() => rayTracer?.render()}>Render</Button>
-                    <Button onClick={() => rayTracer?.clear()}>Clear</Button>
+                <ColumnEntry title="Rendering">
+                    <Flex width={"100%"} gap={4}>
+                        <Button
+                            onClick={() => render()}
+                            isLoading={loading}
+                            w={"100%"}
+                        >
+                            Render
+                        </Button>
+                        <Button onClick={() => clear()} w={"100%"}>
+                            Clear
+                        </Button>
+                    </Flex>
+                    <Progress
+                        value={progress}
+                        max={100}
+                        colorScheme="blue"
+                        borderRadius={5}
+                    />
                 </ColumnEntry>
             </MasterColumn>
         </Flex>

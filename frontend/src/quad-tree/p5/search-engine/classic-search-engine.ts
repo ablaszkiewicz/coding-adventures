@@ -1,6 +1,6 @@
-import { RectangularBoundary } from "../boundaries/RectangularBoundary";
-import { Particle } from "../Particle";
-import { BaseSearchEngine } from "./BaseSearchEngine";
+import { RectangularBoundary } from "../boundaries/rectangular-boundary";
+import { Particle } from "../darticle";
+import { BaseSearchEngine } from "./base-search-engine";
 
 export class ClassicSearchEngine extends BaseSearchEngine {
     constructor(private readonly particles: Particle[]) {

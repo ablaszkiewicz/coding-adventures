@@ -1,6 +1,6 @@
 import { Point } from "framer-motion";
-import { RectangularBoundary } from "../boundaries/RectangularBoundary";
-import { Particle } from "../Particle";
+import { RectangularBoundary } from "../boundaries/rectangular-boundary";
+import { Particle } from "../darticle";
 
 export abstract class BaseSearchEngine {
     protected clock = 0;
