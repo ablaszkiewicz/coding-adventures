@@ -19,8 +19,8 @@ export function setPixel(
     const gByte = 256 * intensity.clamp(g);
     const bByte = 256 * intensity.clamp(b);
 
-    data[index] = r * 256;
-    data[index + 1] = g * 256;
-    data[index + 2] = b * 256;
+    data[index] = rByte;
+    data[index + 1] = gByte;
+    data[index + 2] = bByte;
     data[index + 3] = 255;
 }

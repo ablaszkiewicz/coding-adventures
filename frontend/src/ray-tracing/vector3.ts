@@ -1,3 +1,5 @@
+import { infinity, randomNumberBetweem } from "./utils";
+
 export class Vector3 {
     constructor(public x: number, public y: number, public z: number) {}
 
@@ -43,6 +45,43 @@ export class Vector3 {
 
     public unit(): Vector3 {
         return this.scalarMultiply(1 / this.length());
+    }
+
+    public randomInUnitSphere(): Vector3 {
+        while (true) {
+            const p = Vector3.randomBetween(-1, 1);
+            if (p.lengthSquared() >= 1) continue;
+            return p;
+        }
+    }
+
+    public randomUnitVector(): Vector3 {
+        return this.randomInUnitSphere().unit();
+    }
+
+    public randomOnHemisphere(): Vector3 {
+        const onUnitSphere = this.randomInUnitSphere();
+        if (onUnitSphere.dot(this) > 0.0) {
+            return onUnitSphere;
+        } else {
+            return onUnitSphere.scalarMultiply(-1);
+        }
+    }
+
+    static random(): Vector3 {
+        return new Vector3(
+            (Math.random() - 0.5) * infinity,
+            (Math.random() - 0.5) * infinity,
+            (Math.random() - 0.5) * infinity
+        );
+    }
+
+    static randomBetween(min: number, max: number): Vector3 {
+        return new Vector3(
+            randomNumberBetweem(min, max),
+            randomNumberBetweem(min, max),
+            randomNumberBetweem(min, max)
+        );
     }
 }
 

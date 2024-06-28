@@ -5,6 +5,6 @@ export function degreesToRadians(degrees: number) {
     return degrees * (pi / 180);
 }
 
-export function randomBetweem(min: number, max: number) {
+export function randomNumberBetweem(min: number, max: number) {
     return Math.random() * (max - min) + min;
 }

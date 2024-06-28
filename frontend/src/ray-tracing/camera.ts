@@ -7,7 +7,7 @@ import { Vector3 } from "./vector3";
 
 const IMAGE_WIDTH = 800;
 const ASPECT_RATIO = 16.0 / 9.0;
-const SAMPLES_PER_PIXEL = 100;
+const SAMPLES_PER_PIXEL = 20;
 
 export class Camera {
     private imageHeight!: number;
@@ -24,16 +24,18 @@ export class Camera {
 
         for (let i = 0; i < IMAGE_WIDTH; i++) {
             for (let j = 0; j < this.imageHeight; j++) {
-                const pixelPosition = this.pixel00Position
-                    .add(this.pixelDeltaU.scalarMultiply(i))
-                    .add(this.pixelDeltaV.scalarMultiply(j));
+                let color = new Vector3(0, 0, 0);
 
-                const rayDirection = pixelPosition.subtract(this.center);
-                const ray = new Ray(this.center, rayDirection);
+                for (let sample = 0; sample < SAMPLES_PER_PIXEL; sample++) {
+                    const ray = this.getRay(i, j);
+                    color = color.add(this.rayColor(ray, world));
+                }
 
-                const color = this.rayColor(ray, world);
-
-                setPixel(imageData, { x: i, y: j }, color);
+                setPixel(
+                    imageData,
+                    { x: i, y: j },
+                    color.scalarMultiply(this.pixelSamplesScale)
+                );
             }
         }
 
@@ -68,9 +70,15 @@ export class Camera {
         const hitRecord = new HitRecord();
 
         if (world.hit(ray, 0, infinity, hitRecord)) {
-            return hitRecord.normal
-                .add(new Vector3(1, 1, 1))
-                .scalarMultiply(0.5);
+            const direction = hitRecord.normal.randomOnHemisphere();
+
+            return this.rayColor(
+                new Ray(hitRecord.position, direction),
+                world
+            ).scalarMultiply(0.5);
+            // return hitRecord.normal
+            //     .add(new Vector3(1, 1, 1))
+            //     .scalarMultiply(0.5);
         }
 
         const unitDirection = ray.direction.unit();
