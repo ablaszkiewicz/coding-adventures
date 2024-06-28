@@ -19,8 +19,6 @@ export function sketch(p5: p5) {
     let engine = Engine.Classic;
 
     const init = (props: Props) => {
-        console.log("STARTED");
-
         const quadTree = new QuadTree(
             new RectangularBoundary(new Point(-400, -400), new Point(400, 400)),
             props

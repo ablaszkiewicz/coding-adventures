@@ -51,8 +51,8 @@ export const QuadTree = () => {
                         which detects particles inside and marks them green.
                         <br />
                         <br />
-                        On the right you can choose which algorithm is used to check
-                        for collisions and intersections:
+                        On the right you can choose which algorithm is used to
+                        check for collisions and intersections:
                         <br />- <b>classic search</b> - each particle checks
                         every other particle for collisions,
                         <br />- <b>quad tree</b> - a quad tree is built every

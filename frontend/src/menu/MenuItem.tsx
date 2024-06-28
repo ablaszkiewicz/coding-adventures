@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Spacer, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -18,7 +18,6 @@ export const MenuItem = (props: Props) => {
             flexDir={"row"}
             w={"30%"}
             alignItems={"center"}
-            gap={8}
             borderRadius={10}
             shadow={"lg"}
         >
@@ -26,6 +25,8 @@ export const MenuItem = (props: Props) => {
                 <Heading size={"md"}>{props.title}</Heading>
                 <Text opacity={0.6}>{props.description}</Text>
             </Flex>
+            <Spacer />
+
             <Button
                 h={"100%"}
                 alignSelf={"stretch"}

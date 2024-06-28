@@ -18,6 +18,11 @@ export const Menu = () => {
                 url="quad-tree"
                 description="A simulation which shows the difference between classic and quad tree approaches when searching things on a 2D plane"
             />
+            <MenuItem
+                title="Ray tracing"
+                url="ray-tracing"
+                description="Work in progress..."
+            />
         </Flex>
     );
 };

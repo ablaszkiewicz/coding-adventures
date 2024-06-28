@@ -4,6 +4,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { Menu } from "./menu/Menu";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { QuadTree } from "./quad-tree/QuadTree";
+import { RayTracing } from "./ray-tracing/RayTracing";
 
 const router = createHashRouter([
     {
@@ -13,6 +14,10 @@ const router = createHashRouter([
     {
         path: "/quad-tree",
         element: <QuadTree />,
+    },
+    {
+        path: "/ray-tracing",
+        element: <RayTracing />,
     },
 ]);
 
