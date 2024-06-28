@@ -7,6 +7,7 @@ import { Vector3 } from "./vector3";
 
 const IMAGE_WIDTH = 800;
 const ASPECT_RATIO = 16.0 / 9.0;
+const SAMPLES_PER_PIXEL = 100;
 
 export class Camera {
     private imageHeight!: number;
@@ -14,6 +15,7 @@ export class Camera {
     private pixel00Position!: Vector3;
     private pixelDeltaU!: Vector3;
     private pixelDeltaV!: Vector3;
+    private pixelSamplesScale!: number;
 
     public render(context: CanvasRenderingContext2D, world: Hittable) {
         this.initialize();
@@ -40,8 +42,8 @@ export class Camera {
 
     public initialize() {
         this.imageHeight = IMAGE_WIDTH / ASPECT_RATIO;
-
         this.center = new Vector3(0, 0, 0);
+        this.pixelSamplesScale = 1 / SAMPLES_PER_PIXEL;
 
         // viewport
         const focalLength = 1.0;
@@ -62,23 +64,35 @@ export class Camera {
             .subtract(viewportV.scalarMultiply(0.5));
     }
 
-    public rayColor(ray: Ray, world: Hittable) {
+    public rayColor(ray: Ray, world: Hittable): Vector3 {
         const hitRecord = new HitRecord();
 
         if (world.hit(ray, 0, infinity, hitRecord)) {
-            return {
-                r: 0.5 * (hitRecord.normal.x + 1) * 255,
-                g: 0.5 * (hitRecord.normal.y + 1) * 255,
-                b: 0.5 * (hitRecord.normal.z + 1) * 255,
-            };
+            return hitRecord.normal
+                .add(new Vector3(1, 1, 1))
+                .scalarMultiply(0.5);
         }
 
         const unitDirection = ray.direction.unit();
         const a = 0.5 * (unitDirection.y + 1.0);
-        return {
-            r: (1.0 - a) * 255 + 0.5 * a * 255,
-            g: (1.0 - a) * 255 + 0.7 * a * 255,
-            b: (1.0 - a) * 255 + 1.0 * a * 255,
-        };
+        return new Vector3(0.5, 0.7, 1.0)
+            .scalarMultiply(a)
+            .add(new Vector3(1, 1, 1).scalarMultiply(1 - a));
+    }
+
+    private getRay(i: number, j: number): Ray {
+        const offset = this.sampleSquare();
+        const pixelSample = this.pixel00Position
+            .add(this.pixelDeltaU.scalarMultiply(i + offset.x))
+            .add(this.pixelDeltaV.scalarMultiply(j + offset.y));
+
+        const rayOrigin = this.center;
+        const rayDirection = pixelSample.subtract(this.center);
+
+        return new Ray(rayOrigin, rayDirection);
+    }
+
+    private sampleSquare(): Vector3 {
+        return new Vector3(Math.random() - 0.5, Math.random() - 0.5, 0);
     }
 }

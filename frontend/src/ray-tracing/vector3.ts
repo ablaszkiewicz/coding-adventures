@@ -45,3 +45,5 @@ export class Vector3 {
         return this.scalarMultiply(1 / this.length());
     }
 }
+
+export type Color = Vector3;

@@ -4,3 +4,7 @@ export const infinity = Number.POSITIVE_INFINITY;
 export function degreesToRadians(degrees: number) {
     return degrees * (pi / 180);
 }
+
+export function randomBetweem(min: number, max: number) {
+    return Math.random() * (max - min) + min;
+}
