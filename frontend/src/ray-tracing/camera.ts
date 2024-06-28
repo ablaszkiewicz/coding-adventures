@@ -7,7 +7,7 @@ import { Vector3 } from "./vector3";
 
 const IMAGE_WIDTH = 800;
 const ASPECT_RATIO = 16.0 / 9.0;
-const SAMPLES_PER_PIXEL = 20;
+const SAMPLES_PER_PIXEL = 100;
 const MAX_BOUNCES = 5;
 const IMAGE_HEIGHT = IMAGE_WIDTH / ASPECT_RATIO;
 
