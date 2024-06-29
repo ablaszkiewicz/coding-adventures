@@ -1,13 +1,19 @@
 import { RayTracer } from "./ray-tracer";
+import { Vector3 } from "./vector3";
 
-export interface Message {
-    status: "progress" | "done";
-    data: any;
+export interface MessageToWorker {
+    objectsPositions: Vector3[];
 }
 
-onmessage = async () => {
+onmessage = async (message) => {
+    const data = message.data as MessageToWorker;
+
+    const positions = data.objectsPositions.map(
+        (position) => new Vector3(position.x, position.y, position.z)
+    );
+
     const rayTracer = new RayTracer();
-    const result = await rayTracer.render((progress) =>
+    const result = await rayTracer.render(positions, (progress) =>
         postMessage({ status: "progress", data: progress })
     );
 

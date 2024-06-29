@@ -2,6 +2,9 @@ import { Button, Flex, Progress, Text } from "@chakra-ui/react";
 import { ColumnEntry } from "../shared/ColumnEntry";
 import { MasterColumn } from "../shared/MasterColumn";
 import { useEffect, useRef, useState } from "react";
+import { MyCanvas } from "./controls/MyCanvas";
+import { Vector3 } from "./vector3";
+import { MessageToWorker } from "./worker";
 
 const worker = new Worker(new URL("./worker.ts", import.meta.url), {
     type: "module",
@@ -12,6 +15,7 @@ export const RayTracing = () => {
     const [loading, setLoading] = useState(false);
     const [initialized, setInitialized] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [position, setPosition] = useState(new Vector3(0, 0, -1));
 
     useEffect(() => {
         if (initialized) {
@@ -46,7 +50,11 @@ export const RayTracing = () => {
 
     const render = () => {
         setLoading(true);
-        worker.postMessage(null);
+
+        const messageToWorker: MessageToWorker = {
+            objectsPositions: [position],
+        };
+        worker.postMessage(messageToWorker);
     };
 
     return (
@@ -73,6 +81,7 @@ export const RayTracing = () => {
                     width="800"
                     height="450"
                 ></canvas>
+                <MyCanvas onPositionChange={(p) => setPosition(p)} />
             </Flex>
             <MasterColumn>
                 <ColumnEntry title="Rendering">

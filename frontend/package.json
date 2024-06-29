@@ -18,16 +18,20 @@
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.5",
         "@p5-wrapper/react": "^4.4.0",
+        "@react-three/drei": "^9.107.3",
+        "@react-three/fiber": "^8.16.8",
         "@types/p5": "^1.7.6",
         "framer-motion": "^11.2.6",
         "p5": "^1.9.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-router-dom": "^6.23.1"
+        "react-router-dom": "^6.23.1",
+        "three": "^0.166.0"
     },
     "devDependencies": {
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
+        "@types/three": "^0.166.0",
         "@typescript-eslint/eslint-plugin": "^7.2.0",
         "@typescript-eslint/parser": "^7.2.0",
         "@vitejs/plugin-react": "^4.2.1",

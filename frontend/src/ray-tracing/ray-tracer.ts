@@ -6,9 +6,12 @@ import { Vector3 } from "./vector3";
 export class RayTracer {
     constructor() {}
 
-    public render(progressCallback?: (progress: number) => void): ImageData {
+    public render(
+        positions: Vector3[],
+        progressCallback?: (progress: number) => void
+    ): ImageData {
         const world = new HittableList([
-            new Sphere(new Vector3(0, 0, -1), 0.5),
+            ...positions.map((position) => new Sphere(position, 0.5)),
             new Sphere(new Vector3(0, -100.5, -1), 100),
         ]);
 
