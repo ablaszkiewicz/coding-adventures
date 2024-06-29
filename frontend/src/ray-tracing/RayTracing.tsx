@@ -95,7 +95,7 @@ export const RayTracing = () => {
             w={"100vw"}
             h={"100vh"}
             m={0}
-            p={20}
+            p={10}
             backgroundColor={"gray.900"}
             gap={8}
         >
@@ -107,13 +107,28 @@ export const RayTracing = () => {
                 </ColumnEntry>
             </MasterColumn>
             <Flex flexDir={"column"} alignItems={"center"} gap={4}>
-                <canvas
-                    ref={canvasRef}
-                    id="canvas"
-                    width="800"
-                    height="450"
-                ></canvas>
-                <Flex w={"100%"} h={"100%"} borderWidth={2}>
+                <Flex
+                    direction={"column"}
+                    alignItems={"center"}
+                    backgroundColor={"gray.800"}
+                    p={4}
+                    borderRadius={10}
+                >
+                    <canvas
+                        ref={canvasRef}
+                        id="canvas"
+                        width="800"
+                        height="450"
+                    ></canvas>
+                </Flex>
+                <Flex
+                    direction={"column"}
+                    alignItems={"center"}
+                    backgroundColor={"gray.800"}
+                    borderRadius={10}
+                    w={"100%"}
+                    h={"100%"}
+                >
                     <MyCanvas onPositionsChange={trySetPositions} />
                 </Flex>
             </Flex>
