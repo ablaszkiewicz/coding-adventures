@@ -5,6 +5,10 @@ interface Props {
     title: string;
     children: React.ReactNode;
     previousLocation?: string;
+    customButton?: {
+        title: string;
+        onClick: () => void;
+    };
 }
 
 export const ColumnEntry = (props: Props) => {
@@ -25,6 +29,11 @@ export const ColumnEntry = (props: Props) => {
                 <Spacer />
                 {props.previousLocation && (
                     <Button onClick={() => navigate("/")}>Back</Button>
+                )}
+                {props.customButton && (
+                    <Button onClick={props.customButton.onClick}>
+                        {props.customButton.title}
+                    </Button>
                 )}
             </Flex>
             <Flex flexDir={"column"} p={2} gap={4}>

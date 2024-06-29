@@ -2,14 +2,16 @@ import { PivotControls } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Vector3 as ThreeVector3 } from "three";
+import { useRayTracingStore } from "../store";
 
 interface Props {
     name: string;
     initialPosition: ThreeVector3;
-    onPositionChange: (name: string, position: ThreeVector3) => void;
 }
 
 export const Sphere = (props: Props) => {
+    const { updatePosition } = useRayTracingStore();
+
     const [initialPosition, setInitialPosition] = useState([0, 0, 0]);
     const thisObject = useRef();
 
@@ -21,18 +23,12 @@ export const Sphere = (props: Props) => {
         ]);
     }, []);
 
-    useEffect(() => {
-        if (!thisObject.current) return;
-
-        propagatePositionChange();
-    }, [thisObject.current]);
-
     const propagatePositionChange = () => {
         const threePosition = (thisObject.current as any).getWorldPosition(
             new THREE.Vector3()
         );
 
-        props.onPositionChange(props.name, threePosition);
+        updatePosition(props.name, threePosition);
     };
 
     return (

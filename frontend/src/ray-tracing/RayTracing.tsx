@@ -2,10 +2,12 @@ import { Button, Flex, Progress, Text } from "@chakra-ui/react";
 import { ColumnEntry } from "../shared/ColumnEntry";
 import { MasterColumn } from "../shared/MasterColumn";
 import { useEffect, useRef, useState } from "react";
-import { MyCanvas } from "./controls/MyCanvas";
-import { Vector3 } from "./vector3";
+import { MyCanvas } from "./editor/MyCanvas";
 import { MessageToWorker } from "./worker";
 import { SliderWithValue } from "../shared/SliderWithValue";
+import { useRayTracingStore } from "./store";
+import { Vector3 } from "three";
+import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 
 const worker = new Worker(new URL("./worker.ts", import.meta.url), {
     type: "module",
@@ -13,15 +15,12 @@ const worker = new Worker(new URL("./worker.ts", import.meta.url), {
 
 export const RayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { objectsOnScene, setObjectsOnScene, addNew } = useRayTracingStore();
 
     // rendering
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
     const [canvasInitialized, setCanvasInitialized] = useState(false);
-    const [renderInitialized, setRenderInitialized] = useState(false);
-
-    // positions
-    const [positions, setPositions] = useState<Vector3[]>([]);
 
     // properties
     const [samples, setSamples] = useState(5);
@@ -48,16 +47,28 @@ export const RayTracing = () => {
         clear();
 
         setCanvasInitialized(true);
+
+        setObjectsOnScene([
+            {
+                name: "object1",
+                position: new Vector3(1, 0, -1),
+            },
+            {
+                name: "object2",
+                position: new Vector3(1, 0, 0),
+            },
+            {
+                name: "object3",
+                position: new Vector3(1, 0, 1),
+            },
+        ]);
     }, [canvasRef.current]);
 
     useEffect(() => {
-        if (!positions.length || renderInitialized) {
-            return;
-        }
-
-        setRenderInitialized(true);
-        render();
-    }, [positions]);
+        setTimeout(() => {
+            render();
+        }, 200);
+    }, []);
 
     const clear = () => {
         const canvas = canvasRef.current!;
@@ -71,7 +82,7 @@ export const RayTracing = () => {
         setLoading(true);
 
         const messageToWorker: MessageToWorker = {
-            objectsPositions: positions,
+            objectsPositions: objectsOnScene.map((o) => o.position),
             options: {
                 bounces,
                 samples,
@@ -79,14 +90,6 @@ export const RayTracing = () => {
         };
 
         worker.postMessage(messageToWorker);
-    };
-
-    const trySetPositions = (positions: Vector3[]) => {
-        if (positions.some((p) => p.x === 0 && p.y === 0 && p.z === 0)) {
-            return;
-        }
-
-        setPositions(positions);
     };
 
     return (
@@ -129,7 +132,7 @@ export const RayTracing = () => {
                     w={"100%"}
                     h={"100%"}
                 >
-                    <MyCanvas onPositionsChange={trySetPositions} />
+                    <MyCanvas />
                 </Flex>
             </Flex>
             <MasterColumn>
@@ -168,6 +171,22 @@ export const RayTracing = () => {
                         value={bounces}
                         setValue={setBounces}
                     />
+                </ColumnEntry>
+                <ColumnEntry
+                    title="Objects on scene"
+                    customButton={{ title: "Add", onClick: () => addNew() }}
+                >
+                    <Flex
+                        direction={"column"}
+                        p={4}
+                        backgroundColor={"gray.900"}
+                        borderRadius={10}
+                        gap={4}
+                    >
+                        {objectsOnScene.map((o) => (
+                            <ObjectOnSceneListItem object={o} />
+                        ))}
+                    </Flex>
                 </ColumnEntry>
             </MasterColumn>
         </Flex>
