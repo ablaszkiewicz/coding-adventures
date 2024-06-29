@@ -122,8 +122,13 @@ export const RayTracing = () => {
                         to draw.
                         <br />
                         <br />
-                        In a top window there is a render output of a ray tracer
-                        written from scratch in TypeScript.
+                        What you see here is a demo of a ray tracer written in
+                        pure TypeScript from scratch without any external
+                        libraries.
+                        <br />
+                        <br />
+                        In the top window there is a render output of a ray
+                        tracer.
                         <br />
                         <br />
                         In the bottom window you can see a live editor where you
@@ -131,7 +136,7 @@ export const RayTracing = () => {
                         in the rendered image.
                         <br />
                         <br />
-                        based on{" "}
+                        Based on{" "}
                         <Link
                             color={"blue.400"}
                             href="https://raytracing.github.io/books/RayTracingInOneWeekend.html"
