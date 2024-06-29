@@ -1,6 +1,6 @@
 import { Vector3 as ThreeVector3, Vector3 } from "three";
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 
 export interface ObjectOnScene {
     name: string;

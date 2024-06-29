@@ -14,7 +14,6 @@ import { MyCanvas } from "./editor/MyCanvas";
 import { MessageToWorker } from "./worker";
 import { SliderWithValue } from "../shared/SliderWithValue";
 import { useRayTracingStore } from "./store";
-import { Vector3 } from "three";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 
 const worker = new Worker(new URL("./worker.ts", import.meta.url), {
@@ -23,7 +22,7 @@ const worker = new Worker(new URL("./worker.ts", import.meta.url), {
 
 export const RayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { objectsOnScene, setObjectsOnScene, addNew } = useRayTracingStore();
+    const { objectsOnScene, addNew } = useRayTracingStore();
 
     // rendering
     const [progress, setProgress] = useState(0);
