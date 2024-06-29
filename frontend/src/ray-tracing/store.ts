@@ -1,4 +1,4 @@
-import { Vector3 as ThreeVector3 } from "three";
+import { Vector3 as ThreeVector3, Vector3 } from "three";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
@@ -19,7 +19,20 @@ export const useRayTracingStore = create<RayTracingState>()(
     devtools(
         persist(
             (set) => ({
-                objectsOnScene: [],
+                objectsOnScene: [
+                    {
+                        name: "object1",
+                        position: new Vector3(1, 0, -1),
+                    },
+                    {
+                        name: "object2",
+                        position: new Vector3(1, 0, 0),
+                    },
+                    {
+                        name: "object3",
+                        position: new Vector3(1, 0, 1),
+                    },
+                ],
                 removeObject: (name: string) =>
                     set((state) => ({
                         objectsOnScene: state.objectsOnScene.filter(

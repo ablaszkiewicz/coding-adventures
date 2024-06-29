@@ -55,27 +55,12 @@ export const RayTracing = () => {
         clear();
 
         setCanvasInitialized(true);
-
-        setObjectsOnScene([
-            {
-                name: "object1",
-                position: new Vector3(1, 0, -1),
-            },
-            {
-                name: "object2",
-                position: new Vector3(1, 0, 0),
-            },
-            {
-                name: "object3",
-                position: new Vector3(1, 0, 1),
-            },
-        ]);
     }, [canvasRef.current]);
 
     useEffect(() => {
         setTimeout(() => {
             render();
-        }, 200);
+        }, 500);
     }, []);
 
     const clear = () => {
