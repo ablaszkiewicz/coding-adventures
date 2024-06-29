@@ -70,7 +70,6 @@ export const RayTracing = () => {
             <MasterColumn>
                 <ColumnEntry title="Ray Tracing" previousLocation="/">
                     <Text opacity={0.6} fontWeight={"light"}>
-                        {import.meta.env.DEV ? "Development" : "Production"}
                         Ebebebebe
                     </Text>
                 </ColumnEntry>
