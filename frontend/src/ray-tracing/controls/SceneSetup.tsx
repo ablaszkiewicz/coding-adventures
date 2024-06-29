@@ -28,7 +28,11 @@ export const SceneSetup = () => {
             </mesh>
 
             <Text3D
-                font={"coding-adventures/gt.json"}
+                font={
+                    import.meta.env.DEV
+                        ? "coding-adventures/gt.json"
+                        : "gt.json"
+                }
                 scale={0.2}
                 rotation={[0, Math.PI / 2, 0]}
                 position={[-1, 0, 0.6]}
