@@ -5,6 +5,21 @@ import {
     OrbitControls,
     Text3D,
 } from "@react-three/drei";
+import { Vector3 as MyVector3 } from "../vector3";
+
+export const threeVectorToMyVector3 = (threePosition: {
+    x: number;
+    y: number;
+    z: number;
+}): MyVector3 => {
+    const myPosition = new MyVector3(
+        threePosition.z,
+        threePosition.y,
+        -threePosition.x
+    );
+
+    return myPosition;
+};
 
 export const SceneSetup = () => {
     return (

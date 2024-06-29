@@ -1,41 +1,46 @@
 import { PivotControls } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Vector3 } from "../vector3";
+import { Vector3 as ThreeVector3 } from "three";
 
 interface Props {
-    onPositionChange: (position: Vector3) => void;
+    name: string;
+    initialPosition: ThreeVector3;
+    onPositionChange: (name: string, position: ThreeVector3) => void;
 }
 
 export const Sphere = (props: Props) => {
+    const [initialPosition, setInitialPosition] = useState([0, 0, 0]);
     const thisObject = useRef();
+
+    useEffect(() => {
+        setInitialPosition([
+            props.initialPosition.x,
+            props.initialPosition.y,
+            props.initialPosition.z,
+        ]);
+    }, []);
 
     useEffect(() => {
         if (!thisObject.current) return;
 
-        calculate();
+        propagatePositionChange();
     }, [thisObject.current]);
 
-    const calculate = () => {
+    const propagatePositionChange = () => {
         const threePosition = (thisObject.current as any).getWorldPosition(
             new THREE.Vector3()
         );
 
-        const myPosition = new Vector3(
-            threePosition.z,
-            threePosition.y,
-            -threePosition.x
-        );
-
-        props.onPositionChange(myPosition);
+        props.onPositionChange(props.name, threePosition);
     };
 
     return (
-        <group scale={0.5} position={[1, 0, 0]}>
+        <group scale={0.5} position={initialPosition as any}>
             <PivotControls
                 disableRotations
                 disableScaling
-                onDrag={calculate}
+                onDrag={propagatePositionChange}
                 ref={thisObject as any}
             >
                 <mesh castShadow receiveShadow>

@@ -1,8 +1,10 @@
+import { CameraOptions } from "./camera";
 import { RayTracer } from "./ray-tracer";
 import { Vector3 } from "./vector3";
 
 export interface MessageToWorker {
     objectsPositions: Vector3[];
+    options: CameraOptions;
 }
 
 onmessage = async (message) => {
@@ -13,7 +15,7 @@ onmessage = async (message) => {
     );
 
     const rayTracer = new RayTracer();
-    const result = await rayTracer.render(positions, (progress) =>
+    const result = await rayTracer.render(positions, data.options, (progress) =>
         postMessage({ status: "progress", data: progress })
     );
 

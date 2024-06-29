@@ -5,20 +5,30 @@ import { useEffect, useRef, useState } from "react";
 import { MyCanvas } from "./controls/MyCanvas";
 import { Vector3 } from "./vector3";
 import { MessageToWorker } from "./worker";
+import { SliderWithValue } from "../shared/SliderWithValue";
 
 const worker = new Worker(new URL("./worker.ts", import.meta.url), {
     type: "module",
 });
 
 export const RayTracing = () => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    // rendering
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [initialized, setInitialized] = useState(false);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [position, setPosition] = useState(new Vector3(0, 0, -1));
+    const [canvasInitialized, setCanvasInitialized] = useState(false);
+    const [renderInitialized, setRenderInitialized] = useState(false);
+
+    // positions
+    const [positions, setPositions] = useState<Vector3[]>([]);
+
+    // properties
+    const [samples, setSamples] = useState(5);
+    const [bounces, setBounces] = useState(20);
 
     useEffect(() => {
-        if (initialized) {
+        if (canvasInitialized) {
             return;
         }
         const canvas = canvasRef.current!;
@@ -35,10 +45,19 @@ export const RayTracing = () => {
             }
         };
 
-        render();
-        setInitialized(true);
         clear();
+
+        setCanvasInitialized(true);
     }, [canvasRef.current]);
+
+    useEffect(() => {
+        if (!positions.length || renderInitialized) {
+            return;
+        }
+
+        setRenderInitialized(true);
+        render();
+    }, [positions]);
 
     const clear = () => {
         const canvas = canvasRef.current!;
@@ -52,9 +71,22 @@ export const RayTracing = () => {
         setLoading(true);
 
         const messageToWorker: MessageToWorker = {
-            objectsPositions: [position],
+            objectsPositions: positions,
+            options: {
+                bounces,
+                samples,
+            },
         };
+
         worker.postMessage(messageToWorker);
+    };
+
+    const trySetPositions = (positions: Vector3[]) => {
+        if (positions.some((p) => p.x === 0 && p.y === 0 && p.z === 0)) {
+            return;
+        }
+
+        setPositions(positions);
     };
 
     return (
@@ -82,7 +114,7 @@ export const RayTracing = () => {
                     height="450"
                 ></canvas>
                 <Flex w={"100%"} h={"100%"} borderWidth={2}>
-                    <MyCanvas onPositionChange={(p) => setPosition(p)} />
+                    <MyCanvas onPositionsChange={trySetPositions} />
                 </Flex>
             </Flex>
             <MasterColumn>
@@ -104,6 +136,22 @@ export const RayTracing = () => {
                         max={100}
                         colorScheme="blue"
                         borderRadius={5}
+                    />
+                </ColumnEntry>
+                <ColumnEntry title="Renderer options">
+                    <SliderWithValue
+                        title="Number of samples per pixel"
+                        min={1}
+                        max={500}
+                        value={samples}
+                        setValue={setSamples}
+                    />
+                    <SliderWithValue
+                        title="Maximum number of bounces per ray"
+                        min={1}
+                        max={50}
+                        value={bounces}
+                        setValue={setBounces}
                     />
                 </ColumnEntry>
             </MasterColumn>

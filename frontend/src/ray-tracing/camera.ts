@@ -7,9 +7,12 @@ import { Vector3 } from "./vector3";
 
 const IMAGE_WIDTH = 800;
 const ASPECT_RATIO = 16.0 / 9.0;
-const SAMPLES_PER_PIXEL = 10;
-const MAX_BOUNCES = 20;
 const IMAGE_HEIGHT = IMAGE_WIDTH / ASPECT_RATIO;
+
+export interface CameraOptions {
+    samples: number;
+    bounces: number;
+}
 
 export class Camera {
     private center!: Vector3;
@@ -20,9 +23,10 @@ export class Camera {
 
     public render(
         world: Hittable,
+        options: CameraOptions,
         progressCallback?: (progress: number) => void
     ): ImageData {
-        this.initialize();
+        this.initialize(options);
 
         const imageData = new ImageData(IMAGE_WIDTH, IMAGE_HEIGHT);
         let lastReportedPercentage = 0;
@@ -31,9 +35,11 @@ export class Camera {
             for (let j = 0; j < IMAGE_HEIGHT; j++) {
                 let color = new Vector3(0, 0, 0);
 
-                for (let sample = 0; sample < SAMPLES_PER_PIXEL; sample++) {
+                for (let sample = 0; sample < options.samples; sample++) {
                     const ray = this.getRay(i, j);
-                    color = color.add(this.rayColor(ray, world, MAX_BOUNCES));
+                    color = color.add(
+                        this.rayColor(ray, world, options.bounces)
+                    );
                 }
 
                 setPixel(
@@ -59,9 +65,9 @@ export class Camera {
         return imageData;
     }
 
-    public initialize() {
+    public initialize(options: CameraOptions) {
         this.center = new Vector3(0, 0, 0);
-        this.pixelSamplesScale = 1 / SAMPLES_PER_PIXEL;
+        this.pixelSamplesScale = 1 / options.samples;
 
         // viewport
         const focalLength = 1.0;

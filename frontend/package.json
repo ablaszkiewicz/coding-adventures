@@ -22,6 +22,7 @@
         "@react-three/fiber": "^8.16.8",
         "@types/p5": "^1.7.6",
         "framer-motion": "^11.2.6",
+        "leva": "^0.9.35",
         "p5": "^1.9.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
