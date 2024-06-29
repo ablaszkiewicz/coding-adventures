@@ -1,4 +1,12 @@
-import { Button, Flex, Progress, Text } from "@chakra-ui/react";
+import {
+    Button,
+    Flex,
+    Progress,
+    Spacer,
+    Tag,
+    Text,
+    Tooltip,
+} from "@chakra-ui/react";
 import { ColumnEntry } from "../shared/ColumnEntry";
 import { MasterColumn } from "../shared/MasterColumn";
 import { useEffect, useRef, useState } from "react";
@@ -131,7 +139,25 @@ export const RayTracing = () => {
                     borderRadius={10}
                     w={"100%"}
                     h={"100%"}
+                    position={"relative"}
                 >
+                    <Flex
+                        direction={"row"}
+                        position={"absolute"}
+                        w={"100%"}
+                        p={4}
+                    >
+                        <Spacer />
+                        <Tooltip
+                            label={
+                                "This is live editor. Use LEFT MOUSE to rotate camera. RIGHT MOUSE to move camera. SCROLL to zoom. Whatever you do in live editor will be reflected on the rendered image after pressing 'Render' button"
+                            }
+                        >
+                            <Tag zIndex={1000} cursor={"pointer"}>
+                                Hover me
+                            </Tag>
+                        </Tooltip>
+                    </Flex>
                     <MyCanvas />
                 </Flex>
             </Flex>
