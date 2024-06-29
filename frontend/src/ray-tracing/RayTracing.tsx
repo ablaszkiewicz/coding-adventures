@@ -1,6 +1,7 @@
 import {
     Button,
     Flex,
+    Link,
     Progress,
     Spacer,
     Tag,
@@ -15,29 +16,31 @@ import { MessageToWorker } from "./worker";
 import { SliderWithValue } from "../shared/SliderWithValue";
 import { useRayTracingStore } from "./store";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
-
-const worker = new Worker(new URL("./worker.ts", import.meta.url), {
-    type: "module",
-});
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 export const RayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { objectsOnScene, addNew } = useRayTracingStore();
 
     // rendering
+    const [worker, setWorker] = useState(
+        new Worker(new URL("./worker.ts", import.meta.url), { type: "module" })
+    );
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [canvasInitialized, setCanvasInitialized] = useState(false);
 
     // properties
     const [samples, setSamples] = useState(5);
     const [bounces, setBounces] = useState(20);
 
     useEffect(() => {
-        if (canvasInitialized) {
+        clear();
+    }, []);
+
+    useEffect(() => {
+        if (!worker) {
             return;
         }
-        const canvas = canvasRef.current!;
 
         worker.onmessage = (e) => {
             if (e.data.status === "progress") {
@@ -45,22 +48,34 @@ export const RayTracing = () => {
                 return;
             }
 
+            const canvas = canvasRef.current!;
+
             if (e.data.status === "done") {
                 canvas.getContext("2d")!.putImageData(e.data.data, 0, 0);
                 setLoading(false);
             }
         };
 
-        clear();
-
-        setCanvasInitialized(true);
-    }, [canvasRef.current]);
+        return () => {
+            worker.removeEventListener("message", () => {});
+        };
+    }, [worker]);
 
     useEffect(() => {
         setTimeout(() => {
             render();
         }, 500);
     }, []);
+
+    const cancel = () => {
+        worker.terminate();
+        setLoading(false);
+        setWorker(
+            new Worker(new URL("./worker.ts", import.meta.url), {
+                type: "module",
+            })
+        );
+    };
 
     const clear = () => {
         const canvas = canvasRef.current!;
@@ -97,7 +112,34 @@ export const RayTracing = () => {
             <MasterColumn>
                 <ColumnEntry title="Ray Tracing" previousLocation="/">
                     <Text opacity={0.6} fontWeight={"light"}>
-                        Ebebebebe
+                        Ray tracing is a technique used in computer graphics to
+                        create realistic images by simulating how rays of light
+                        interact with objects in a scene.
+                        <br />
+                        <br />
+                        Think of rays as imaginary lines that are traced from
+                        your eyes (or a virtual camera) into the scene you want
+                        to draw.
+                        <br />
+                        <br />
+                        In a top window there is a render output of a ray tracer
+                        written from scratch in TypeScript.
+                        <br />
+                        <br />
+                        In the bottom window you can see a live editor where you
+                        can add objects to the scene and see how they will look
+                        in the rendered image.
+                        <br />
+                        <br />
+                        based on{" "}
+                        <Link
+                            color={"blue.400"}
+                            href="https://raytracing.github.io/books/RayTracingInOneWeekend.html"
+                            isExternal
+                        >
+                            ray tracing in one weekend{" "}
+                            <ExternalLinkIcon mx="2px" />
+                        </Link>
                     </Text>
                 </ColumnEntry>
             </MasterColumn>
@@ -155,8 +197,12 @@ export const RayTracing = () => {
                         >
                             Render
                         </Button>
-                        <Button onClick={() => clear()} w={"100%"}>
-                            Clear
+                        <Button
+                            isDisabled={!loading}
+                            onClick={() => cancel()}
+                            w={"100%"}
+                        >
+                            Cancel
                         </Button>
                     </Flex>
                     <Progress
@@ -173,6 +219,7 @@ export const RayTracing = () => {
                         max={500}
                         value={samples}
                         setValue={setSamples}
+                        tooltip="Higher number of samples will result in smoother image but will take longer to render."
                     />
                     <SliderWithValue
                         title="Maximum number of bounces per ray"
@@ -180,6 +227,7 @@ export const RayTracing = () => {
                         max={50}
                         value={bounces}
                         setValue={setBounces}
+                        tooltip="Limits how many times can ray bounce off objects before it is considered as 'lost'. 0 will result in black image because rays can't bounce. 1 will result in only seeing black shapes because rays don't bounce off objects. Higher number will result in more realistic image but will take longer to render. For standard materials anything above 5 makes little to no difference."
                     />
                 </ColumnEntry>
                 <ColumnEntry

@@ -1,3 +1,4 @@
+import { InfoIcon } from "@chakra-ui/icons";
 import {
     Flex,
     Slider,
@@ -6,6 +7,7 @@ import {
     SliderThumb,
     Input,
     Text,
+    Tooltip,
 } from "@chakra-ui/react";
 
 interface Props {
@@ -14,12 +16,20 @@ interface Props {
     setValue: (val: number) => void;
     min: number;
     max: number;
+    tooltip?: string;
 }
 
 export const SliderWithValue = (props: Props) => {
     return (
         <Flex flexDir={"column"}>
-            <Text>{props.title}</Text>
+            <Flex gap={2} alignItems={"center"}>
+                <Text>{props.title}</Text>
+                {props.tooltip && (
+                    <Tooltip label={props.tooltip} placement="left">
+                        <InfoIcon />
+                    </Tooltip>
+                )}
+            </Flex>
             <Flex flexDir={"row"} gap={4}>
                 <Slider
                     aria-label="number of particles"
@@ -35,6 +45,7 @@ export const SliderWithValue = (props: Props) => {
                     </SliderTrack>
                     <SliderThumb />
                 </Slider>
+
                 <Input
                     type="number"
                     value={props.value}
