@@ -74,14 +74,16 @@ export const RayTracing = () => {
                     </Text>
                 </ColumnEntry>
             </MasterColumn>
-            <Flex flexDir={"column"} alignItems={"center"}>
+            <Flex flexDir={"column"} alignItems={"center"} gap={4}>
                 <canvas
                     ref={canvasRef}
                     id="canvas"
                     width="800"
                     height="450"
                 ></canvas>
-                <MyCanvas onPositionChange={(p) => setPosition(p)} />
+                <Flex w={"100%"} h={"100%"} borderWidth={2}>
+                    <MyCanvas onPositionChange={(p) => setPosition(p)} />
+                </Flex>
             </Flex>
             <MasterColumn>
                 <ColumnEntry title="Rendering">

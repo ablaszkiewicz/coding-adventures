@@ -1,4 +1,10 @@
-import { GizmoHelper, GizmoViewport, OrbitControls } from "@react-three/drei";
+import {
+    Box,
+    GizmoHelper,
+    GizmoViewport,
+    OrbitControls,
+    Text3D,
+} from "@react-three/drei";
 
 export const SceneSetup = () => {
     return (
@@ -20,6 +26,19 @@ export const SceneSetup = () => {
                 <planeGeometry />
                 <shadowMaterial transparent opacity={0.5} />
             </mesh>
+
+            <Text3D
+                font={"coding-adventures/gt.json"}
+                scale={0.2}
+                rotation={[0, Math.PI / 2, 0]}
+                position={[-1, 0, 0.6]}
+            >
+                Camera
+            </Text3D>
+
+            <Box position={[-1, 0.1, 0]} scale={[0.5, 0.5, 2]}>
+                <meshStandardMaterial wireframe />
+            </Box>
 
             <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
                 <GizmoViewport labelColor="white" axisHeadScale={1} />
