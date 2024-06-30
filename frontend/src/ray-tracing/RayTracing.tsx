@@ -17,7 +17,6 @@ import { SliderWithValue } from "../shared/SliderWithValue";
 import { useRayTracingStore } from "./store";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { v4 } from "uuid";
 
 export const RayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
