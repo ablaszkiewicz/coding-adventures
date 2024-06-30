@@ -19,6 +19,7 @@ onmessage = async (message) => {
         }),
         color: object.color,
         material: object.material,
+        scale: object.scale,
     }));
 
     const rayTracer = new RayTracer();

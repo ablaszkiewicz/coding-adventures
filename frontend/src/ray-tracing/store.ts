@@ -9,12 +9,15 @@ export interface ObjectOnScene {
     position: ThreeVector3;
     color: MyVector3;
     material: MaterialType;
+    scale: number;
 }
 
 interface RayTracingState {
     objectsOnScene: ObjectOnScene[];
     removeObject: (name: string) => void;
     updatePosition: (name: string, position: ThreeVector3) => void;
+    updateMaterial: (name: string, material: MaterialType) => void;
+    updateColor: (name: string, color: MyVector3) => void;
     setObjectsOnScene: (objects: ObjectOnScene[]) => void;
     addNew: () => void;
 }
@@ -28,18 +31,21 @@ export const useRayTracingStore = create<RayTracingState>()(
                     position: new ThreeVector3(1, 0, -1),
                     color: new MyVector3(1, 0, 0),
                     material: MaterialType.Lambertian,
+                    scale: 0.5,
                 },
                 {
                     name: "object2",
-                    position: new ThreeVector3(1, 0, 0),
-                    color: new MyVector3(1, 1, 1),
+                    position: new ThreeVector3(7, 1, 0),
+                    color: new MyVector3(0.6, 0.6, 0.6),
                     material: MaterialType.Metal,
+                    scale: 3,
                 },
                 {
                     name: "object3",
                     position: new ThreeVector3(1, 0, 1),
                     color: new MyVector3(0, 0, 1),
                     material: MaterialType.Lambertian,
+                    scale: 0.5,
                 },
             ],
             removeObject: (name: string) =>
@@ -52,6 +58,18 @@ export const useRayTracingStore = create<RayTracingState>()(
                 set((state) => ({
                     objectsOnScene: state.objectsOnScene.map((object) =>
                         object.name === name ? { ...object, position } : object
+                    ),
+                })),
+            updateMaterial: (name: string, material: MaterialType) =>
+                set((state) => ({
+                    objectsOnScene: state.objectsOnScene.map((object) =>
+                        object.name === name ? { ...object, material } : object
+                    ),
+                })),
+            updateColor: (name: string, color: MyVector3) =>
+                set((state) => ({
+                    objectsOnScene: state.objectsOnScene.map((object) =>
+                        object.name === name ? { ...object, color } : object
                     ),
                 })),
             setObjectsOnScene: (objects: ObjectOnScene[]) =>
@@ -70,9 +88,10 @@ export const useRayTracingStore = create<RayTracingState>()(
                                     ].name.split("t")[1]
                                 ) + 1
                             }`,
-                            position: new ThreeVector3(1, 1, 0),
-                            color: new MyVector3(0, 0, 0),
+                            position: new ThreeVector3(1, 0, 0),
+                            color: new MyVector3(1, 1, 1),
                             material: MaterialType.Lambertian,
+                            scale: 0.5,
                         },
                     ],
                 })),

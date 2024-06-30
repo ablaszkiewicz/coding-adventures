@@ -10,7 +10,10 @@ interface Props {
 }
 
 export const Sphere = (props: Props) => {
-    const { updatePosition } = useRayTracingStore();
+    const { updatePosition, objectsOnScene } = useRayTracingStore();
+    const thisObjectFromStore = objectsOnScene.find(
+        (object) => object.name === props.name
+    );
 
     const [initialPosition, setInitialPosition] = useState([0, 0, 0]);
     const thisObject = useRef();
@@ -32,16 +35,30 @@ export const Sphere = (props: Props) => {
     };
 
     return (
-        <group scale={0.5} position={initialPosition as any}>
+        <group
+            scale={thisObjectFromStore?.scale}
+            position={initialPosition as any}
+        >
             <PivotControls
                 disableRotations
                 disableScaling
                 onDrag={propagatePositionChange}
                 ref={thisObject as any}
+                scale={thisObjectFromStore?.scale! * 2}
             >
                 <mesh castShadow receiveShadow>
                     <sphereGeometry args={[1]} />
-                    <meshStandardMaterial color="white" />
+                    <meshStandardMaterial
+                        color={
+                            thisObjectFromStore
+                                ? new THREE.Color(
+                                      thisObjectFromStore.color.x,
+                                      thisObjectFromStore.color.y,
+                                      thisObjectFromStore.color.z
+                                  )
+                                : new THREE.Color(0, 0, 0)
+                        }
+                    />
                 </mesh>
             </PivotControls>
         </group>

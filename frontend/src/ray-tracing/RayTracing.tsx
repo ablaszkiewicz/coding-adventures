@@ -248,10 +248,10 @@ export const RayTracing = () => {
                 >
                     <Flex
                         direction={"column"}
-                        p={4}
+                        p={2}
                         backgroundColor={"gray.900"}
                         borderRadius={10}
-                        gap={4}
+                        gap={2}
                     >
                         {objectsOnScene.map((o) => (
                             <ObjectOnSceneListItem key={o.name} object={o} />

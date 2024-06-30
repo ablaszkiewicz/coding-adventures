@@ -76,6 +76,10 @@ export class Vector3 {
         return this.subtract(other.scalarMultiply(2 * this.dot(other)));
     }
 
+    public equals(other: Vector3): boolean {
+        return this.x === other.x && this.y === other.y && this.z === other.z;
+    }
+
     static randomInUnitSphere(): Vector3 {
         while (true) {
             const p = Vector3.randomBetween(-1, 1);

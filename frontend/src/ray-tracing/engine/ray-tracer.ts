@@ -8,6 +8,7 @@ export interface EngineObject {
     position: Vector3;
     color: Vector3;
     material: MaterialType;
+    scale: number;
 }
 
 export class RayTracer {
@@ -23,7 +24,7 @@ export class RayTracer {
                 (object) =>
                     new Sphere(
                         object.position,
-                        0.5,
+                        object.scale,
                         object.material,
                         object.color
                     )
@@ -32,7 +33,7 @@ export class RayTracer {
                 new Vector3(0, -100.5, -1),
                 100,
                 MaterialType.Lambertian,
-                new Vector3(1, 1, 1)
+                new Vector3(0.7, 0.7, 0.7)
             ),
         ]);
 
