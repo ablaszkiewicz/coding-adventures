@@ -5,6 +5,7 @@ import { Menu } from "./menu/Menu";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { QuadTree } from "./quad-tree/QuadTree";
 import { RayTracing } from "./ray-tracing/RayTracing";
+import { DistributedRayTracing } from "./ray-tracing/DistributedRayTracing";
 
 const router = createHashRouter([
     {
@@ -18,6 +19,10 @@ const router = createHashRouter([
     {
         path: "/ray-tracing",
         element: <RayTracing />,
+    },
+    {
+        path: "/distributed-ray-tracing",
+        element: <DistributedRayTracing />,
     },
 ]);
 

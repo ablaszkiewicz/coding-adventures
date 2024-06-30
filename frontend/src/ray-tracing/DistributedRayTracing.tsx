@@ -12,13 +12,12 @@ import { ColumnEntry } from "../shared/ColumnEntry";
 import { MasterColumn } from "../shared/MasterColumn";
 import { useEffect, useRef, useState } from "react";
 import { MyCanvas } from "./editor/MyCanvas";
-import { MessageToWorker } from "./worker";
 import { SliderWithValue } from "../shared/SliderWithValue";
 import { useRayTracingStore } from "./store";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
-export const RayTracing = () => {
+export const DistributedRayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { objectsOnScene, addNew, randomizeScene, clearScene } =
         useRayTracingStore();
@@ -31,7 +30,7 @@ export const RayTracing = () => {
     const [loading, setLoading] = useState(false);
 
     // properties
-    const [samples, setSamples] = useState(5);
+    const [samples, setSamples] = useState(100);
     const [bounces, setBounces] = useState(20);
 
     useEffect(() => {
@@ -89,15 +88,55 @@ export const RayTracing = () => {
     const render = async () => {
         setLoading(true);
 
-        const messageToWorker: MessageToWorker = {
-            objects: objectsOnScene,
-            options: {
-                bounces,
-                samples,
-            },
-        };
+        for (let i = 0; i < 8; i++) {
+            const promises = [];
+            for (let j = 0; j < 5; j++) {
+                promises.push(paintPart(i, j));
+            }
 
-        worker.postMessage(messageToWorker);
+            await Promise.all(promises);
+        }
+
+        setLoading(false);
+    };
+
+    const paintPart = async (i: number, j: number) => {
+        console.log("Before");
+
+        const response = await (
+            await fetch("http://localhost:3000/render", {
+                method: "POST",
+                body: JSON.stringify({
+                    objects: objectsOnScene,
+                    options: {
+                        samples: samples,
+                        bounces: bounces,
+                        areaToRender: {
+                            xMin: i * 100,
+                            xMax: i * 100 + 100,
+                            yMin: j * 100,
+                            yMax: j * 100 + 100,
+                        },
+                    },
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+        ).json();
+
+        console.log("Painting");
+        console.log(response.length / 4);
+
+        const imageData = new ImageData(100, 100);
+
+        for (let k = 0; k < 100 * 100 * 4; k++) {
+            imageData.data[k] = response[k];
+        }
+
+        canvasRef
+            .current!.getContext("2d")!
+            .putImageData(imageData, i * 100, j * 100);
     };
 
     return (
@@ -112,48 +151,24 @@ export const RayTracing = () => {
             overflow={"hidden"}
         >
             <MasterColumn>
-                <ColumnEntry title="Ray Tracing" previousLocation="/">
+                <ColumnEntry
+                    title="Distributed ray Tracing"
+                    previousLocation="/"
+                >
                     <Text opacity={0.6} fontWeight={"light"}>
-                        Ray tracing is a technique used in computer graphics to
-                        create realistic images by simulating how rays of light
-                        interact with objects in a scene.
-                        <br />
-                        Think of rays as imaginary lines that are traced from
-                        your eyes (or a virtual camera) into the scene you want
-                        to draw.
-                        <br />
-                        <br />
-                        What you see here is a demo of a ray tracer written in
-                        pure TypeScript from scratch without any external
-                        libraries.
-                        <br />
-                        <br />
-                        In the top window there is a render output of the ray
-                        tracer I have written.
-                        <br />
-                        <br />
-                        In the bottom window you can see a live editor where you
-                        can add objects to the scene and see how they will look
-                        in the rendered image. It was created thanks to awesome
-                        packages from{" "}
+                        If you haven't, I highly encourage you to see browser
+                        version of this ray tracer available{" "}
                         <Link
                             color={"blue.400"}
-                            href="https://github.com/pmndrs"
+                            href="https://ablaszkiewicz.github.io/coding-adventures/#/ray-tracing"
                             isExternal
                         >
-                            poimandres <ExternalLinkIcon mx="2px" />
+                            here <ExternalLinkIcon mx="2px" />
                         </Link>
                         <br />
                         <br />
-                        Based on{" "}
-                        <Link
-                            color={"blue.400"}
-                            href="https://raytracing.github.io/books/RayTracingInOneWeekend.html"
-                            isExternal
-                        >
-                            ray tracing in one weekend{" "}
-                            <ExternalLinkIcon mx="2px" />
-                        </Link>
+                        This ray tracer works in a distributed way by splitting
+                        the image into parts and invoking lambda functions
                     </Text>
                 </ColumnEntry>
                 <ColumnEntry title="Actions">

@@ -1,0 +1,22 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: aleksanderblaszkiewicz
+service: ray-tracer-unit
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: eu-central-1
+
+functions:
+  ray-tracer-unit:
+    handler: dist/lambda-main.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'

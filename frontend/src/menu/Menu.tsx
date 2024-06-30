@@ -23,6 +23,11 @@ export const Menu = () => {
                 url="ray-tracing"
                 description="Ray tracer built from the scratch in TypeScript. Supports spheres. Uses lambertian and metal materials. Runs on a web worker"
             />
+            <MenuItem
+                title="Distributed ray tracing"
+                url="distributed-ray-tracing"
+                description="Ray tracer on lambdas. Work in progress."
+            />
         </Flex>
     );
 };
