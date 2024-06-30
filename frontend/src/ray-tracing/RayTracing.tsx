@@ -268,6 +268,7 @@ export const RayTracing = () => {
                         title: "Add",
                         onClick: () => addNew(),
                     }}
+                    canShrink
                 >
                     <Flex
                         direction={"column"}
@@ -275,7 +276,7 @@ export const RayTracing = () => {
                         backgroundColor={"gray.900"}
                         borderRadius={10}
                         gap={2}
-                        overflow={"scroll"}
+                        overflowY={"auto"}
                     >
                         {objectsOnScene.map((o) => (
                             <ObjectOnSceneListItem key={o.name} object={o} />

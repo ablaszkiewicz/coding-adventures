@@ -149,7 +149,9 @@ export const getRandomObjectOnScene = (
         Math.random() > 0.2 ? MaterialType.Lambertian : MaterialType.Metal;
 
     const randomColor =
-        listOfColors[Math.floor(Math.random() * listOfColors.length)];
+        randomMaterial === MaterialType.Metal
+            ? "Gray"
+            : listOfColors[Math.floor(Math.random() * listOfColors.length)];
 
     return {
         name: getNextName(objects),

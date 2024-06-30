@@ -25,7 +25,7 @@ export const ColumnEntry = (props: Props) => {
             p={4}
             shadow={"lg"}
             overflow={"hidden"}
-            flexShrink={0}
+            flexShrink={props.canShrink ? 1 : 0}
         >
             <Flex gap={4}>
                 <Heading size={"lg"}>{props.title}</Heading>
@@ -39,7 +39,7 @@ export const ColumnEntry = (props: Props) => {
                     </Button>
                 )}
             </Flex>
-            <Flex flexDir={"column"} p={2} gap={4}>
+            <Flex flexDir={"column"} p={2} gap={4} overflow={"hidden"}>
                 {props.children}
             </Flex>
         </Flex>

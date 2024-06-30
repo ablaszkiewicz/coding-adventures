@@ -8,6 +8,7 @@ export const colorsToVector = {
     Purple: new Vector3(1, 0, 1),
     Cyan: new Vector3(0, 1, 1),
     Yellow: new Vector3(1, 1, 0),
+    Gray: new Vector3(0.7, 0.7, 0.7),
 };
 
 export const vectorToColor = (vector: Vector3) => {
