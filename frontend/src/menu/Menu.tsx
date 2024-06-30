@@ -21,7 +21,7 @@ export const Menu = () => {
             <MenuItem
                 title="Ray tracing"
                 url="ray-tracing"
-                description="Work in progress..."
+                description="Ray tracer built from the scratch in TypeScript. Supports spheres. Uses lambertian and metal materials. Runs on a web worker"
             />
         </Flex>
     );
