@@ -2,7 +2,7 @@ import { Flex, IconButton, Select, Spacer, Text } from "@chakra-ui/react";
 import { ObjectOnScene, useRayTracingStore } from "./store";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { MaterialType } from "./engine/materials/material";
-import { Vector3 } from "./engine/vector3";
+import { vectorToColor, colorsToVector } from "./colors";
 
 interface Props {
     object: ObjectOnScene;
@@ -10,25 +10,6 @@ interface Props {
 
 export const ObjectOnSceneListItem = (props: Props) => {
     const { removeObject, updateMaterial, updateColor } = useRayTracingStore();
-
-    const colorsToVector = {
-        Red: new Vector3(1, 0, 0),
-        Green: new Vector3(0, 1, 0),
-        Blue: new Vector3(0, 0, 1),
-        White: new Vector3(1, 1, 1),
-    };
-
-    const vectorToColor = (vector: Vector3) => {
-        if (vector.equals(new Vector3(1, 0, 0))) {
-            return "Red";
-        } else if (vector.equals(new Vector3(0, 1, 0))) {
-            return "Green";
-        } else if (vector.equals(new Vector3(0, 0, 1))) {
-            return "Blue";
-        } else if (vector.equals(new Vector3(1, 1, 1))) {
-            return "White";
-        }
-    };
 
     return (
         <Flex

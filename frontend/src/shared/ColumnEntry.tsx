@@ -9,6 +9,7 @@ interface Props {
         title: string;
         onClick: () => void;
     };
+    canShrink?: boolean;
 }
 
 export const ColumnEntry = (props: Props) => {
@@ -23,6 +24,8 @@ export const ColumnEntry = (props: Props) => {
             alignSelf={"baseline"}
             p={4}
             shadow={"lg"}
+            overflow={"hidden"}
+            flexShrink={0}
         >
             <Flex gap={4}>
                 <Heading size={"lg"}>{props.title}</Heading>

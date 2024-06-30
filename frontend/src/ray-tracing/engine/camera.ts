@@ -66,7 +66,7 @@ export class Camera {
     }
 
     public initialize(options: CameraOptions) {
-        this.center = new Vector3(0, 0, 0);
+        this.center = new Vector3(0, 0.5, 0.5);
         this.pixelSamplesScale = 1 / options.samples;
 
         // viewport

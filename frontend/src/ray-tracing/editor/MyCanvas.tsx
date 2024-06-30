@@ -18,7 +18,12 @@ export const MyCanvas = () => {
             <SceneSetup />
             {objectsOnScene.map((object) => (
                 <Sphere
-                    key={object.name}
+                    key={
+                        object.name +
+                        object.position.x +
+                        object.position.y +
+                        object.position.z
+                    }
                     name={object.name}
                     initialPosition={object.position}
                 />

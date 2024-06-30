@@ -20,7 +20,8 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 export const RayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { objectsOnScene, addNew } = useRayTracingStore();
+    const { objectsOnScene, addNew, randomizeScene, clearScene } =
+        useRayTracingStore();
 
     // rendering
     const [worker, setWorker] = useState(
@@ -108,6 +109,7 @@ export const RayTracing = () => {
             p={10}
             backgroundColor={"gray.900"}
             gap={8}
+            overflow={"hidden"}
         >
             <MasterColumn>
                 <ColumnEntry title="Ray Tracing" previousLocation="/">
@@ -153,6 +155,24 @@ export const RayTracing = () => {
                             <ExternalLinkIcon mx="2px" />
                         </Link>
                     </Text>
+                </ColumnEntry>
+                <ColumnEntry title="Actions">
+                    <Flex flexDir={"column"} gap={4} mt={4}>
+                        <Button
+                            onClick={() => {
+                                randomizeScene();
+                            }}
+                        >
+                            Randomize scene
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                clearScene();
+                            }}
+                        >
+                            Clear scene
+                        </Button>
+                    </Flex>
                 </ColumnEntry>
             </MasterColumn>
             <Flex flexDir={"column"} alignItems={"center"} gap={4}>
@@ -244,7 +264,10 @@ export const RayTracing = () => {
                 </ColumnEntry>
                 <ColumnEntry
                     title="Objects on scene"
-                    customButton={{ title: "Add", onClick: () => addNew() }}
+                    customButton={{
+                        title: "Add",
+                        onClick: () => addNew(),
+                    }}
                 >
                     <Flex
                         direction={"column"}
@@ -252,6 +275,7 @@ export const RayTracing = () => {
                         backgroundColor={"gray.900"}
                         borderRadius={10}
                         gap={2}
+                        overflow={"scroll"}
                     >
                         {objectsOnScene.map((o) => (
                             <ObjectOnSceneListItem key={o.name} object={o} />

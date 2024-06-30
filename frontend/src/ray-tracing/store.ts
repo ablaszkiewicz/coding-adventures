@@ -3,6 +3,8 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { Vector3 as MyVector3 } from "./engine/vector3";
 import { MaterialType } from "./engine/materials/material";
+import { randomNumberBetweem } from "./engine/utils";
+import { colorsToVector, listOfColors } from "./colors";
 
 export interface ObjectOnScene {
     name: string;
@@ -20,6 +22,9 @@ interface RayTracingState {
     updateColor: (name: string, color: MyVector3) => void;
     setObjectsOnScene: (objects: ObjectOnScene[]) => void;
     addNew: () => void;
+    addNewRandom: () => void;
+    randomizeScene: () => void;
+    clearScene: () => void;
 }
 
 export const useRayTracingStore = create<RayTracingState>()(
@@ -27,21 +32,21 @@ export const useRayTracingStore = create<RayTracingState>()(
         (set) => ({
             objectsOnScene: [
                 {
-                    name: "object1",
+                    name: "Sphere1",
                     position: new ThreeVector3(1, 0, -1),
                     color: new MyVector3(1, 0, 0),
                     material: MaterialType.Lambertian,
                     scale: 0.5,
                 },
                 {
-                    name: "object2",
-                    position: new ThreeVector3(7, 1, 0),
+                    name: "Sphere2",
+                    position: new ThreeVector3(3, 1, 0),
                     color: new MyVector3(0.6, 0.6, 0.6),
                     material: MaterialType.Metal,
-                    scale: 3,
+                    scale: 1,
                 },
                 {
-                    name: "object3",
+                    name: "Sphere3",
                     position: new ThreeVector3(1, 0, 1),
                     color: new MyVector3(0, 0, 1),
                     material: MaterialType.Lambertian,
@@ -81,13 +86,7 @@ export const useRayTracingStore = create<RayTracingState>()(
                     objectsOnScene: [
                         ...state.objectsOnScene,
                         {
-                            name: `object${
-                                Number(
-                                    state.objectsOnScene[
-                                        state.objectsOnScene.length - 1
-                                    ].name.split("t")[1]
-                                ) + 1
-                            }`,
+                            name: getNextName(state.objectsOnScene),
                             position: new ThreeVector3(1, 0, 0),
                             color: new MyVector3(1, 1, 1),
                             material: MaterialType.Lambertian,
@@ -95,9 +94,68 @@ export const useRayTracingStore = create<RayTracingState>()(
                         },
                     ],
                 })),
+            addNewRandom: () =>
+                set((state) => ({
+                    objectsOnScene: [
+                        ...state.objectsOnScene,
+                        getRandomObjectOnScene(state.objectsOnScene),
+                    ],
+                })),
+            randomizeScene: () =>
+                set(() => ({
+                    objectsOnScene: getRandomObjectsOnScene(30),
+                })),
+            clearScene: () =>
+                set(() => ({
+                    objectsOnScene: [],
+                })),
         }),
         {
             name: "ray-tracer-storage",
         }
     )
 );
+
+export const getNextName = (objects: ObjectOnScene[]): string => {
+    if (objects.length === 0) return "Sphere1";
+
+    return `Sphere${
+        Number(objects[objects.length - 1].name.split("re")[1]) + 1
+    }`;
+};
+
+export const getRandomObjectsOnScene = (amount: number): ObjectOnScene[] => {
+    const objectsOnScene: ObjectOnScene[] = [];
+
+    for (let i = 0; i < amount; i++) {
+        objectsOnScene.push(getRandomObjectOnScene(objectsOnScene));
+    }
+
+    return objectsOnScene;
+};
+
+export const getRandomObjectOnScene = (
+    objects: ObjectOnScene[]
+): ObjectOnScene => {
+    const randomScale = randomNumberBetweem(0.2, 2);
+
+    const position = new ThreeVector3(
+        randomNumberBetweem(3, 10),
+        randomNumberBetweem(0, 3),
+        randomNumberBetweem(-10, 10)
+    );
+
+    const randomMaterial =
+        Math.random() > 0.2 ? MaterialType.Lambertian : MaterialType.Metal;
+
+    const randomColor =
+        listOfColors[Math.floor(Math.random() * listOfColors.length)];
+
+    return {
+        name: getNextName(objects),
+        position,
+        color: colorsToVector[randomColor as keyof typeof colorsToVector],
+        material: randomMaterial,
+        scale: randomScale,
+    };
+};

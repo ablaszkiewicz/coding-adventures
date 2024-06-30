@@ -12,6 +12,8 @@ export const MasterColumn = (props: Props) => {
             borderRadius={10}
             alignSelf={"baseline"}
             gap={8}
+            overflow={"hidden"}
+            h={"100%"}
         >
             {props.children}
         </Flex>
