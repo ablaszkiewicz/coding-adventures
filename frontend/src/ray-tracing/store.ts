@@ -5,8 +5,10 @@ import { Vector3 as MyVector3 } from "./engine/vector3";
 import { MaterialType } from "./engine/materials/material";
 import { randomNumberBetweem } from "./engine/utils";
 import { colorsToVector, listOfColors } from "./colors";
+import { v4 } from "uuid";
 
 export interface ObjectOnScene {
+    id: string;
     name: string;
     position: ThreeVector3;
     color: MyVector3;
@@ -37,6 +39,7 @@ export const useRayTracingStore = create<RayTracingState>()(
                     color: new MyVector3(1, 0, 0),
                     material: MaterialType.Lambertian,
                     scale: 0.5,
+                    id: v4(),
                 },
                 {
                     name: "Sphere2",
@@ -44,6 +47,7 @@ export const useRayTracingStore = create<RayTracingState>()(
                     color: new MyVector3(0.6, 0.6, 0.6),
                     material: MaterialType.Metal,
                     scale: 1,
+                    id: v4(),
                 },
                 {
                     name: "Sphere3",
@@ -51,6 +55,7 @@ export const useRayTracingStore = create<RayTracingState>()(
                     color: new MyVector3(0, 0, 1),
                     material: MaterialType.Lambertian,
                     scale: 0.5,
+                    id: v4(),
                 },
             ],
             removeObject: (name: string) =>
@@ -91,6 +96,7 @@ export const useRayTracingStore = create<RayTracingState>()(
                             color: new MyVector3(1, 1, 1),
                             material: MaterialType.Lambertian,
                             scale: 0.5,
+                            id: v4(),
                         },
                     ],
                 })),
@@ -159,5 +165,6 @@ export const getRandomObjectOnScene = (
         color: colorsToVector[randomColor as keyof typeof colorsToVector],
         material: randomMaterial,
         scale: randomScale,
+        id: v4(),
     };
 };

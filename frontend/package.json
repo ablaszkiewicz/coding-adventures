@@ -21,6 +21,7 @@
         "@react-three/drei": "^9.107.3",
         "@react-three/fiber": "^8.16.8",
         "@types/p5": "^1.7.6",
+        "@types/uuid": "^10.0.0",
         "framer-motion": "^11.2.6",
         "leva": "^0.9.35",
         "p5": "^1.9.4",
@@ -28,6 +29,7 @@
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.23.1",
         "three": "^0.166.0",
+        "uuid": "^10.0.0",
         "zustand": "^4.5.4"
     },
     "devDependencies": {
