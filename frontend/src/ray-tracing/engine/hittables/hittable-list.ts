@@ -1,6 +1,6 @@
 import { HitRecord } from "./hit-record";
 import { Hittable } from "./hittable";
-import { Ray } from "./ray";
+import { Ray } from "../ray";
 
 export class HittableList implements Hittable {
     constructor(public objects: Hittable[]) {}
@@ -18,6 +18,7 @@ export class HittableList implements Hittable {
                 hitRecord.normal = tempRecord.normal;
                 hitRecord.position = tempRecord.position;
                 hitRecord.t = tempRecord.t;
+                hitRecord.material = tempRecord.material;
             }
         }
 

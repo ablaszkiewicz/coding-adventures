@@ -1,6 +1,6 @@
 import { setPixel } from "./helpers";
-import { HitRecord } from "./hit-record";
-import { Hittable } from "./hittable";
+import { HitRecord } from "./hittables/hit-record";
+import { Hittable } from "./hittables/hittable";
 import { Ray } from "./ray";
 import { infinity } from "./utils";
 import { Vector3 } from "./vector3";
@@ -96,13 +96,27 @@ export class Camera {
         const hitRecord = new HitRecord();
 
         if (world.hit(ray, 0.001, infinity, hitRecord)) {
-            const direction = hitRecord.normal.add(Vector3.randomUnitVector());
+            // without materials
+            // const direction = hitRecord.normal.add(Vector3.randomUnitVector());
+            // return this.rayColor(
+            //     new Ray(hitRecord.position, direction),
+            //     world,
+            //     depth - 1
+            // ).scalarMultiply(0.5);
 
-            return this.rayColor(
-                new Ray(hitRecord.position, direction),
-                world,
-                depth - 1
-            ).scalarMultiply(0.5);
+            // with materials
+
+            const scatterResult = hitRecord.material.scatter(ray, hitRecord);
+
+            if (scatterResult.didScatter) {
+                return this.rayColor(
+                    scatterResult.scattered!,
+                    world,
+                    depth - 1
+                ).multiply(scatterResult.attentuation!);
+            }
+
+            return new Vector3(0, 0, 0);
         }
 
         const unitDirection = ray.direction.unit();

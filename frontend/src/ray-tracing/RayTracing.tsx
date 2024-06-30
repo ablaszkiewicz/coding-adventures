@@ -89,7 +89,7 @@ export const RayTracing = () => {
         setLoading(true);
 
         const messageToWorker: MessageToWorker = {
-            objectsPositions: objectsOnScene.map((o) => o.position),
+            objects: objectsOnScene,
             options: {
                 bounces,
                 samples,
@@ -116,7 +116,6 @@ export const RayTracing = () => {
                         create realistic images by simulating how rays of light
                         interact with objects in a scene.
                         <br />
-                        <br />
                         Think of rays as imaginary lines that are traced from
                         your eyes (or a virtual camera) into the scene you want
                         to draw.
@@ -127,13 +126,21 @@ export const RayTracing = () => {
                         libraries.
                         <br />
                         <br />
-                        In the top window there is a render output of a ray
-                        tracer.
+                        In the top window there is a render output of the ray
+                        tracer I have written.
                         <br />
                         <br />
                         In the bottom window you can see a live editor where you
                         can add objects to the scene and see how they will look
-                        in the rendered image.
+                        in the rendered image. It was created thanks to awesome
+                        packages from{" "}
+                        <Link
+                            color={"blue.400"}
+                            href="https://github.com/pmndrs"
+                            isExternal
+                        >
+                            poimandres <ExternalLinkIcon mx="2px" />
+                        </Link>
                         <br />
                         <br />
                         Based on{" "}
@@ -247,7 +254,7 @@ export const RayTracing = () => {
                         gap={4}
                     >
                         {objectsOnScene.map((o) => (
-                            <ObjectOnSceneListItem object={o} />
+                            <ObjectOnSceneListItem key={o.name} object={o} />
                         ))}
                     </Flex>
                 </ColumnEntry>

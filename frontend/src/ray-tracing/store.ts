@@ -1,10 +1,14 @@
-import { Vector3 as ThreeVector3, Vector3 } from "three";
+import { Vector3 as ThreeVector3 } from "three";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { Vector3 as MyVector3 } from "./engine/vector3";
+import { MaterialType } from "./engine/materials/material";
 
 export interface ObjectOnScene {
     name: string;
     position: ThreeVector3;
+    color: MyVector3;
+    material: MaterialType;
 }
 
 interface RayTracingState {
@@ -21,15 +25,21 @@ export const useRayTracingStore = create<RayTracingState>()(
             objectsOnScene: [
                 {
                     name: "object1",
-                    position: new Vector3(1, 0, -1),
+                    position: new ThreeVector3(1, 0, -1),
+                    color: new MyVector3(1, 0, 0),
+                    material: MaterialType.Lambertian,
                 },
                 {
                     name: "object2",
-                    position: new Vector3(1, 0, 0),
+                    position: new ThreeVector3(1, 0, 0),
+                    color: new MyVector3(1, 1, 1),
+                    material: MaterialType.Metal,
                 },
                 {
                     name: "object3",
-                    position: new Vector3(1, 0, 1),
+                    position: new ThreeVector3(1, 0, 1),
+                    color: new MyVector3(0, 0, 1),
+                    material: MaterialType.Lambertian,
                 },
             ],
             removeObject: (name: string) =>
@@ -61,6 +71,8 @@ export const useRayTracingStore = create<RayTracingState>()(
                                 ) + 1
                             }`,
                             position: new ThreeVector3(1, 1, 0),
+                            color: new MyVector3(0, 0, 0),
+                            material: MaterialType.Lambertian,
                         },
                     ],
                 })),
