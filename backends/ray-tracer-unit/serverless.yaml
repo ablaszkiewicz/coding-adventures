@@ -2,8 +2,11 @@
 org: aleksanderblaszkiewicz
 service: ray-tracer-unit
 
+useDotenv: true
+
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin
 
 provider:
   name: aws

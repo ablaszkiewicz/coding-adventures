@@ -5,7 +5,7 @@
     "homepage": "https://ablaszkiewicz.github.io/coding-adventures",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --config vite.config.ts",
         "build": "tsc && vite build",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
@@ -22,6 +22,7 @@
         "@react-three/fiber": "^8.16.8",
         "@types/p5": "^1.7.6",
         "@types/uuid": "^10.0.0",
+        "bson-objectid": "^2.0.4",
         "framer-motion": "^11.2.6",
         "leva": "^0.9.35",
         "p5": "^1.9.4",

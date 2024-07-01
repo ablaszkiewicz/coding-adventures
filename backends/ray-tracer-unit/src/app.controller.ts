@@ -1,21 +1,26 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { EngineObject, RayTracer } from './engine/ray-tracer';
-import { MaterialType } from './engine/materials/material';
 import { Vector3 } from './engine/vector3';
 import { CameraOptions } from './engine/camera';
 import { threeVectorToMyVector3 } from './engine/utils';
+import { RenderEntryService } from './render-entry.service';
 
 export interface RenderRequest {
   objects: EngineObject[];
   options: CameraOptions;
+  frontendAssignedId: string;
 }
 
 @Controller()
 export class AppController {
-  constructor() {}
+  constructor(private readonly renderEntryService: RenderEntryService) {
+    console.log(process.env.MONGO_URL);
+  }
 
   @Post('render')
-  render(@Body() request: RenderRequest): string {
+  async render(@Body() request: RenderRequest): Promise<string> {
+    // await this.renderEntryService.record(request.frontendAssignedId);
+
     const rayTracer = new RayTracer();
 
     const objectsInstantiated = request.objects.map((object) => ({
@@ -26,5 +31,10 @@ export class AppController {
     }));
 
     return rayTracer.render(objectsInstantiated, request.options);
+  }
+
+  @Get('credits')
+  async getCreditsCount(): Promise<number> {
+    return this.renderEntryService.getDailyCount();
   }
 }

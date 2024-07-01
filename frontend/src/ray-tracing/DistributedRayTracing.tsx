@@ -16,6 +16,12 @@ import { SliderWithValue } from "../shared/SliderWithValue";
 import { useRayTracingStore } from "./store";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { constructImageDataFromPlainArray } from "./helpers";
+import {
+    getPartOfImageData,
+    getPartOfImageDataWithRetriesWithExponentialBackoff,
+} from "./client";
+import ObjectID from "bson-objectid";
 
 export const DistributedRayTracing = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,8 +36,9 @@ export const DistributedRayTracing = () => {
     const [loading, setLoading] = useState(false);
 
     // properties
-    const [samples, setSamples] = useState(100);
+    const [samples, setSamples] = useState(1);
     const [bounces, setBounces] = useState(20);
+    const [chunkSize, setChunkSize] = useState(100);
 
     useEffect(() => {
         clear();
@@ -86,57 +93,54 @@ export const DistributedRayTracing = () => {
     };
 
     const render = async () => {
+        clear();
         setLoading(true);
+        const id = new ObjectID().toHexString();
 
-        for (let i = 0; i < 8; i++) {
-            const promises = [];
-            for (let j = 0; j < 5; j++) {
-                promises.push(paintPart(i, j));
+        console.log(id);
+
+        const width = 800;
+
+        const xParts = Math.ceil(width / chunkSize);
+        const yParts = Math.ceil(450 / chunkSize);
+
+        const promises = [];
+        for (let x = 0; x < xParts; x++) {
+            for (let y = 0; y < yParts; y++) {
+                promises.push(paintPart(x, y, chunkSize, id));
             }
-
-            await Promise.all(promises);
         }
+        await Promise.all(promises);
 
         setLoading(false);
     };
 
-    const paintPart = async (i: number, j: number) => {
-        console.log("Before");
+    const paintPart = async (
+        x: number,
+        y: number,
+        size: number,
+        id: string
+    ) => {
+        const plainColorsArray =
+            await getPartOfImageDataWithRetriesWithExponentialBackoff({
+                bounces,
+                samples,
+                objectsOnScene,
+                size,
+                x: x,
+                y: y,
+                id,
+            });
 
-        const response = await (
-            await fetch("http://localhost:3000/render", {
-                method: "POST",
-                body: JSON.stringify({
-                    objects: objectsOnScene,
-                    options: {
-                        samples: samples,
-                        bounces: bounces,
-                        areaToRender: {
-                            xMin: i * 100,
-                            xMax: i * 100 + 100,
-                            yMin: j * 100,
-                            yMax: j * 100 + 100,
-                        },
-                    },
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-        ).json();
-
-        console.log("Painting");
-        console.log(response.length / 4);
-
-        const imageData = new ImageData(100, 100);
-
-        for (let k = 0; k < 100 * 100 * 4; k++) {
-            imageData.data[k] = response[k];
-        }
+        const imageData = constructImageDataFromPlainArray(
+            plainColorsArray,
+            size,
+            size
+        );
 
         canvasRef
             .current!.getContext("2d")!
-            .putImageData(imageData, i * 100, j * 100);
+            .putImageData(imageData, x * size, y * size);
     };
 
     return (
@@ -257,6 +261,14 @@ export const DistributedRayTracing = () => {
                         max={100}
                         colorScheme="blue"
                         borderRadius={5}
+                    />
+                    <SliderWithValue
+                        title="Chunk size"
+                        min={10}
+                        max={300}
+                        value={chunkSize}
+                        setValue={setChunkSize}
+                        tooltip="How big area is rendered in one chunk."
                     />
                 </ColumnEntry>
                 <ColumnEntry title="Renderer options">
