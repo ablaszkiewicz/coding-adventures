@@ -6,6 +6,7 @@ interface Props {
     title: string;
     url: string;
     description: string;
+    isDisabled?: boolean;
 }
 
 export const MenuItem = (props: Props) => {
@@ -31,6 +32,7 @@ export const MenuItem = (props: Props) => {
                 h={"100%"}
                 alignSelf={"stretch"}
                 onClick={() => navigate(props.url)}
+                isDisabled={props.isDisabled}
             >
                 <ChevronRightIcon fontSize={"2xl"} />
             </Button>
