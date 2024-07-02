@@ -16,7 +16,7 @@ export class RenderEntryController {
   }
 
   @Get('credits')
-  async getCreditsCount(): Promise<number> {
-    return this.renderEntryService.getCreditsCount();
+  async getCreditsCount(): Promise<{ count: number }> {
+    return { count: await this.renderEntryService.getCreditsCount() };
   }
 }

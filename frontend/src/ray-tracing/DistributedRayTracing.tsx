@@ -17,7 +17,7 @@ import { useRayTracingStore } from "./store";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { constructImageDataFromPlainArray } from "./helpers";
-import { getPartOfImageDataWithRetriesWithExponentialBackoff } from "./client";
+import { getCreditsCount, getPartOfImageDataWithRetries } from "./client";
 import ObjectID from "bson-objectid";
 
 export const DistributedRayTracing = () => {
@@ -31,6 +31,7 @@ export const DistributedRayTracing = () => {
     );
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [credits, setCredits] = useState(0);
 
     // properties
     const [samples, setSamples] = useState(1);
@@ -39,6 +40,7 @@ export const DistributedRayTracing = () => {
 
     useEffect(() => {
         clear();
+        refreshCredits();
     }, []);
 
     useEffect(() => {
@@ -90,7 +92,8 @@ export const DistributedRayTracing = () => {
     };
 
     const render = async () => {
-        // console.log(await getCreditsCount());
+        void refreshCredits();
+
         clear();
         setLoading(true);
         const id = new ObjectID().toHexString();
@@ -109,6 +112,7 @@ export const DistributedRayTracing = () => {
         await Promise.all(promises);
 
         setLoading(false);
+        void refreshCredits();
     };
 
     const paintPart = async (
@@ -117,16 +121,15 @@ export const DistributedRayTracing = () => {
         size: number,
         id: string
     ) => {
-        const plainColorsArray =
-            await getPartOfImageDataWithRetriesWithExponentialBackoff({
-                bounces,
-                samples,
-                objectsOnScene,
-                size,
-                x: x,
-                y: y,
-                id,
-            });
+        const plainColorsArray = await getPartOfImageDataWithRetries({
+            bounces,
+            samples,
+            objectsOnScene,
+            size,
+            x: x,
+            y: y,
+            id,
+        });
 
         const imageData = constructImageDataFromPlainArray(
             plainColorsArray,
@@ -137,6 +140,10 @@ export const DistributedRayTracing = () => {
         canvasRef
             .current!.getContext("2d")!
             .putImageData(imageData, x * size, y * size);
+    };
+
+    const refreshCredits = async () => {
+        setCredits(await getCreditsCount());
     };
 
     return (
@@ -235,8 +242,7 @@ export const DistributedRayTracing = () => {
                 </Flex>
             </Flex>
             <MasterColumn>
-                <ColumnEntry title="Rendering">
-                    <Text>Remaining credits: 99</Text>
+                <ColumnEntry title={`Rendering (${credits} credits)`}>
                     <Flex width={"100%"} gap={4}>
                         <Button
                             onClick={() => render()}
