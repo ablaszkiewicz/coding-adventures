@@ -2,7 +2,6 @@ import {
     Button,
     Flex,
     Link,
-    Progress,
     Spacer,
     Tag,
     Text,
@@ -29,7 +28,6 @@ export const DistributedRayTracing = () => {
     const [worker, setWorker] = useState(
         new Worker(new URL("./worker.ts", import.meta.url), { type: "module" })
     );
-    const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
     const [credits, setCredits] = useState(0);
 
@@ -42,30 +40,6 @@ export const DistributedRayTracing = () => {
         clear();
         refreshCredits();
     }, []);
-
-    useEffect(() => {
-        if (!worker) {
-            return;
-        }
-
-        worker.onmessage = (e) => {
-            if (e.data.status === "progress") {
-                setProgress(e.data.data);
-                return;
-            }
-
-            const canvas = canvasRef.current!;
-
-            if (e.data.status === "done") {
-                canvas.getContext("2d")!.putImageData(e.data.data, 0, 0);
-                setLoading(false);
-            }
-        };
-
-        return () => {
-            worker.removeEventListener("message", () => {});
-        };
-    }, [worker]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -88,7 +62,6 @@ export const DistributedRayTracing = () => {
         const ctx = canvas.getContext("2d")!;
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        setProgress(0);
     };
 
     const render = async () => {
@@ -242,8 +215,21 @@ export const DistributedRayTracing = () => {
                 </Flex>
             </Flex>
             <MasterColumn>
-                <ColumnEntry title={`Rendering (${credits} credits)`}>
+                <ColumnEntry title={`Rendering`}>
                     <Flex width={"100%"} gap={4}>
+                        <Tooltip
+                            label={
+                                "This number represents remaining credits. Each render costs 1 credit. There is a shared pool of credits for all users - 100 credits per 24h"
+                            }
+                        >
+                            <Tag
+                                flexShrink={0}
+                                variant={"outline"}
+                                cursor={"pointer"}
+                            >
+                                {credits}
+                            </Tag>
+                        </Tooltip>
                         <Button
                             onClick={() => render()}
                             isLoading={loading}
@@ -259,12 +245,6 @@ export const DistributedRayTracing = () => {
                             Cancel
                         </Button>
                     </Flex>
-                    <Progress
-                        value={progress}
-                        max={100}
-                        colorScheme="blue"
-                        borderRadius={5}
-                    />
                     <SliderWithValue
                         title="Chunk size"
                         min={10}
