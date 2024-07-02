@@ -16,12 +16,15 @@ interface Params {
     id: string;
 }
 
+const randomBetween = (min: number, max: number) =>
+    Math.floor(Math.random() * (max - min + 1) + min);
+
 export const getPartOfImageDataWithRetries = async (
     params: Params
 ): Promise<number[]> => {
     // timeout after
     let retries = 0;
-    const delay = 500;
+    const delay = randomBetween(500, 5_000);
 
     while (retries < 5) {
         try {

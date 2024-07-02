@@ -15,7 +15,7 @@ provider:
 
 functions:
   main:
-    timeout: 10
+    timeout: 30
     handler: dist/lambda-main.handler
     events:
       - http:
