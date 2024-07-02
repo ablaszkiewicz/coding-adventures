@@ -1,6 +1,6 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: aleksanderblaszkiewicz
-service: ray-tracer-unit
+service: ray-tracer-guard
 
 useDotenv: true
 
@@ -10,12 +10,12 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs16.x
   region: eu-central-1
 
 functions:
   main:
-    timeout: 10
+    timeout: 900
     handler: dist/lambda-main.handler
     events:
       - http:

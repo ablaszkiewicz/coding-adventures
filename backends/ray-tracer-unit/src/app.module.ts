@@ -1,19 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { MongooseModule } from '@nestjs/mongoose';
+
 import { ConfigModule } from '@nestjs/config';
-import { RenderEntry, RenderEntrySchema } from './render-entry.schema';
-import { RenderEntryService } from './render-entry.service';
+import { AppController } from './app.controller';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGO_URL),
-    MongooseModule.forFeature([
-      { name: RenderEntry.name, schema: RenderEntrySchema },
-    ]),
-  ],
+  imports: [ConfigModule.forRoot()],
   controllers: [AppController],
-  providers: [RenderEntryService],
+  providers: [],
 })
 export class AppModule {}

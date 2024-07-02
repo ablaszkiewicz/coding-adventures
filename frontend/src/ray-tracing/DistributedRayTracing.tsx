@@ -17,10 +17,7 @@ import { useRayTracingStore } from "./store";
 import { ObjectOnSceneListItem } from "./ObjectOnSceneListItem";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { constructImageDataFromPlainArray } from "./helpers";
-import {
-    getPartOfImageData,
-    getPartOfImageDataWithRetriesWithExponentialBackoff,
-} from "./client";
+import { getPartOfImageDataWithRetriesWithExponentialBackoff } from "./client";
 import ObjectID from "bson-objectid";
 
 export const DistributedRayTracing = () => {
@@ -93,11 +90,10 @@ export const DistributedRayTracing = () => {
     };
 
     const render = async () => {
+        // console.log(await getCreditsCount());
         clear();
         setLoading(true);
         const id = new ObjectID().toHexString();
-
-        console.log(id);
 
         const width = 800;
 
@@ -240,6 +236,7 @@ export const DistributedRayTracing = () => {
             </Flex>
             <MasterColumn>
                 <ColumnEntry title="Rendering">
+                    <Text>Remaining credits: 99</Text>
                     <Flex width={"100%"} gap={4}>
                         <Button
                             onClick={() => render()}

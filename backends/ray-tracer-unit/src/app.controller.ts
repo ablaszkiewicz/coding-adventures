@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { EngineObject, RayTracer } from './engine/ray-tracer';
-import { Vector3 } from './engine/vector3';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CameraOptions } from './engine/camera';
+import { EngineObject, RayTracer } from './engine/ray-tracer';
 import { threeVectorToMyVector3 } from './engine/utils';
-import { RenderEntryService } from './render-entry.service';
+import { Vector3 } from './engine/vector3';
 
 export interface RenderRequest {
   objects: EngineObject[];
@@ -13,13 +12,18 @@ export interface RenderRequest {
 
 @Controller()
 export class AppController {
-  constructor(private readonly renderEntryService: RenderEntryService) {
-    console.log(process.env.MONGO_URL);
-  }
-
   @Post('render')
   async render(@Body() request: RenderRequest): Promise<string> {
-    // await this.renderEntryService.record(request.frontendAssignedId);
+    const response = await fetch(
+      `${process.env.RENDER_GUARD_URL}/can-render/${request.frontendAssignedId}`,
+    );
+    const data = await response.json();
+
+    const canRender = data.canRender;
+
+    if (!canRender) {
+      throw new Error('Daily limit used');
+    }
 
     const rayTracer = new RayTracer();
 
@@ -31,10 +35,5 @@ export class AppController {
     }));
 
     return rayTracer.render(objectsInstantiated, request.options);
-  }
-
-  @Get('credits')
-  async getCreditsCount(): Promise<number> {
-    return this.renderEntryService.getDailyCount();
   }
 }
