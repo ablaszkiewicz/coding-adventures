@@ -21,12 +21,7 @@ export const Menu = () => {
             <MenuItem
                 title="Ray tracing"
                 url="ray-tracing"
-                description="Ray tracer built from the scratch in TypeScript. Supports spheres. Uses lambertian and metal materials. Runs on a web worker"
-            />
-            <MenuItem
-                title="Distributed ray tracing"
-                url="distributed-ray-tracing"
-                description="Previously built ray tracer but now distributed. Uses AWS lambda functions to render the image in parallel"
+                description="Ray tracer built from the scratch in TypeScript. Supports spheres. Uses lambertian and metal materials. Runs locally on web worker or distributed on AWS Lambda functions"
             />
         </Flex>
     );
