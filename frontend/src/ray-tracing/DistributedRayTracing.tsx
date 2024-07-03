@@ -247,8 +247,8 @@ export const DistributedRayTracing = () => {
                     </Flex>
                     <SliderWithValue
                         title="Chunk size"
-                        min={10}
-                        max={300}
+                        min={20}
+                        max={samples > 300 ? 50 : 100}
                         value={chunkSize}
                         setValue={setChunkSize}
                         tooltip="How big area is rendered in one chunk."
@@ -260,7 +260,12 @@ export const DistributedRayTracing = () => {
                         min={1}
                         max={500}
                         value={samples}
-                        setValue={setSamples}
+                        setValue={(value) => {
+                            if (value > 300 && chunkSize > 50) {
+                                setChunkSize(50);
+                            }
+                            setSamples(value);
+                        }}
                         tooltip="Higher number of samples will result in smoother image but will take longer to render."
                     />
                     <SliderWithValue
