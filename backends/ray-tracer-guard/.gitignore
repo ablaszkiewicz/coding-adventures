@@ -399,3 +399,7 @@ dist
 .webpack
 .serverless/**/*.zip
 .serverless
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
